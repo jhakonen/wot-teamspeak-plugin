@@ -22,7 +22,12 @@
 #include "structures.h"
 #include "../utils/logging.h"
 
+#ifdef WIN32
 #include <Windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
 #include <iostream>
 
 namespace
@@ -57,16 +62,28 @@ LPALCGETINTEGERV         g_alcGetIntegerv;
 LPALCGETERROR            g_alcGetError;
 LPALCGETSTRING           g_alcGetString;
 
+#ifdef WIN32
 HMODULE g_openALLib = NULL;
+#else
+void *g_openALLib = NULL;
+#endif
 
 template <typename TFunction>
 TFunction resolveSymbol( const char *symbol )
 {
+#ifdef WIN32
 	TFunction result = (TFunction) GetProcAddress( g_openALLib, symbol );
 	if( !result )
 	{
 		throw OpenAL::Failure( "Failed to load OpenAL library, reason: " + getWin32ErrorMessage() );
 	}
+#else // LINUX
+	TFunction result = (TFunction) dlsym( g_openALLib, symbol );
+	if( !result )
+	{
+		throw OpenAL::Failure( QString("Failed to load OpenAL library, reason: %1").arg( dlerror() ) );
+	}
+#endif
 	return result;
 }
 
@@ -78,6 +95,7 @@ inline void throwIfNotLoaded()
 	}
 }
 
+#ifdef WIN32
 QString getWin32ErrorMessage()
 {
 	wchar_t *string = NULL;
@@ -92,6 +110,7 @@ QString getWin32ErrorMessage()
 	LocalFree( (HLOCAL)string );
 	return message;
 }
+#endif
 
 void testForALError( const char *funcName )
 {
@@ -124,6 +143,7 @@ void loadLib()
 	if( !g_openALLib )
 	{
 		Log::info() << "Loading OpenAL library";
+		#ifdef WIN32
 		#if defined( _WIN64 )
 		QString libName = "OpenAL64";
 		#else
@@ -134,6 +154,13 @@ void loadLib()
 		{
 			throw OpenAL::Failure( "Failed to load OpenAL library, reason: " + getWin32ErrorMessage() );
 		}
+		#else // LINUX
+		g_openALLib = dlopen( "libopenal.so.1", RTLD_LAZY );
+		if( !g_openALLib )
+		{
+			throw OpenAL::Failure( QString( "Failed to load OpenAL library, reason: %1" ).arg( dlerror() ) );
+		}
+		#endif
 
 		g_alBufferData           = resolveSymbol<LPALBUFFERDATA>( "alBufferData" );
 		g_alDeleteBuffers        = resolveSymbol<LPALDELETEBUFFERS>( "alDeleteBuffers" );
@@ -170,10 +197,17 @@ void unloadLib()
 	if( g_openALLib )
 	{
 		Log::info() << "Unloading OpenAL library";
+		#ifdef WIN32
 		if( FreeLibrary( g_openALLib ) == FALSE )
 		{
 			throw OpenAL::Failure( "Failed to unload OpenAL library, reason: " + getWin32ErrorMessage() );
 		}
+		#else // LINUX
+		if ( dlclose( g_openALLib ) != 0 )
+		{
+			throw OpenAL::Failure( QString( "Failed to unload OpenAL library, reason: %1" ).arg( dlerror() ) );
+		}
+		#endif
 		g_openALLib = NULL;
 	}
 }

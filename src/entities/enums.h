@@ -40,7 +40,7 @@ enum {
 	MENU_ID_GLOBAL_HELP
 };
 
-enum RotateMode
+enum RotateMode : short
 {
 	RotateXAxis,
 	RotateYAxis,

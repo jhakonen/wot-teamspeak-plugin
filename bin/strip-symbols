@@ -1,0 +1,4 @@
+#!/bin/bash
+objcopy --only-keep-debug "$1" "$2"
+objcopy --strip-debug "$1"
+objcopy --add-gnu-debuglink="$2" "$1"

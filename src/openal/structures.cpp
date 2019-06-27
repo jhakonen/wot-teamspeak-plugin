@@ -83,7 +83,7 @@ SourceInfo::SourceInfo( const OutputInfo &outputInfo,
 						qreal rolloffFactor,
 						bool relative,
 						bool streaming )
-	: valid( true ), id( id ), outputInfo( outputInfo ), position( position ),
+	: valid( true ), outputInfo( outputInfo ), id( id ), position( position ),
 	  rolloffFactor( rolloffFactor ), relative( relative ),
 	  streaming( streaming )
 {

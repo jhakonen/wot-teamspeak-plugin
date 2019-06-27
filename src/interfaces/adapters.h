@@ -33,7 +33,7 @@ class User;
 class Camera;
 class Vector;
 class Settings;
-enum RotateMode;
+enum RotateMode : short;
 }
 
 namespace Interfaces

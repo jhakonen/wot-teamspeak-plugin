@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QtGlobal>
+#include <ostream>
 
 namespace Entity
 {

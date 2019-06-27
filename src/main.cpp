@@ -32,12 +32,15 @@
 #include "drivers/openalbackend.h"
 #include "drivers/wotconnector.h"
 #include "openal/openal.h"
+#include "openal/structures.h"
 
 #include <QDir>
 #include <QTimer>
-#include <Windows.h>
 
+#ifdef WIN32
+#include <Windows.h>
 static DLL_DIRECTORY_COOKIE dllSearchCookie;
+#endif
 
 void pluginInit( QObject *parent )
 {
@@ -50,7 +53,9 @@ void pluginInit( QObject *parent )
 
 	QString dataPath = teamSpeakPlugin->getPluginDataPath();
 	QString dataPathNative = QDir::toNativeSeparators( dataPath );
+#ifdef WIN32
 	dllSearchCookie = AddDllDirectory( (wchar_t*)dataPathNative.utf16() );
+#endif
 
 	auto iniSettingsFile = new Driver::IniSettingsFile( parent );
 	auto openALBackend = new Driver::OpenALBackend( dataPath, parent );
@@ -92,9 +97,21 @@ void pluginInit( QObject *parent )
 	} );
 }
 
+#include <iostream>
+
 void pluginShutdown()
 {
-	OpenAL::free();
+	try
+	{
+		OpenAL::free();
+	}
+	catch( const OpenAL::Failure &error )
+	{
+		Log::warning() << "Failed to free OpenAL, reason: " << error.what();
+	}
+
 	Log::setSink( NULL );
+#ifdef WIN32
 	RemoveDllDirectory( dllSearchCookie );
+#endif
 }

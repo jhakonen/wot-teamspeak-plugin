@@ -18,8 +18,6 @@
  * USA
  */
 
-#pragma once
-
 #include "camera.h"
 
 namespace Entity

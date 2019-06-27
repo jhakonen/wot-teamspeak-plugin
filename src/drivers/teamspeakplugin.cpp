@@ -23,7 +23,12 @@
 #include "../entities/failures.h"
 #include "config.h"
 
+#ifdef WIN32
 #include <Windows.h>
+#else
+#include <string.h>
+#endif
+
 #include <iostream>
 #include <cassert>
 #include <functional>
@@ -90,7 +95,7 @@ static QPointer<Driver::TeamSpeakPlugin> gTeamSpeakPlugin;
 static QList<Driver::TeamSpeakAudioBackend*> gAudioBackends;
 static QMutex audioBackendMutex( QMutex::Recursive );
 
-#define PLUGIN_API_VERSION 22
+#define PLUGIN_API_VERSION 23
 
 #ifdef _WIN32
 /* Helper function to convert wchar_T to Utf-8 encoded strings on Windows */
@@ -245,7 +250,11 @@ void ts3plugin_registerPluginID( const char* id )
 {
 	size_t size = strlen( id ) + 1;
 	gPluginID = new char[strlen( id ) + 1];
+#ifdef WIN32
 	strncpy_s( gPluginID, size, id, size );
+#else
+	strncpy( gPluginID, id, size );
+#endif
 	printf( "PLUGIN: registerPluginID: %s\n", gPluginID );
 }
 
@@ -277,8 +286,12 @@ static struct PluginMenuItem* createMenuItem( PluginMenuType type, int id, const
 	PluginMenuItem* menuItem = (PluginMenuItem*) malloc( sizeof( PluginMenuItem ) );
 	menuItem->type = type;
 	menuItem->id = id;
+#ifdef WIN32
 	strncpy_s( menuItem->text, text, PLUGIN_MENU_BUFSZ );
-	menuItem->icon[0] = NULL;
+#else
+	strncpy( menuItem->text, text, PLUGIN_MENU_BUFSZ );
+#endif
+	menuItem->icon[0] = (char)NULL;
 	return menuItem;
 }
 
@@ -707,12 +720,12 @@ QList<anyID> TeamSpeakPlugin::getMyChannelClients() const
 	anyID* clients;
 	QList<anyID> results;
 	uint64 channelId = getMyChannelID();
-	if( channelId == -1 )
+	if( channelId == (uint64)-1 )
 	{
 		return results;
 	}
 	gTs3Functions.getChannelClientList( gTs3Functions.getCurrentServerConnectionHandlerID(), getMyChannelID(), &clients );
-	for( int i = 0; clients[i] != NULL; i++ )
+	for( int i = 0; clients[i] != (anyID)NULL; i++ )
 	{
 		if( clients[i] != getMyUserId() )
 		{

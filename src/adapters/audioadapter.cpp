@@ -36,7 +36,7 @@ namespace Adapter
 {
 
 AudioAdapter::AudioAdapter( Interfaces::AudioDriver *driver, const QString &dataPath, QObject *parent )
-	: QObject( parent ), driver( driver ), rotator( new PositionRotator( this ) ), dataPath( dataPath )
+	: QObject( parent ), driver( driver ), dataPath( dataPath ), rotator( new PositionRotator( this ) )
 {
 	connect( rotator, SIGNAL(started()), this, SLOT(onStartTestSound()) );
 	connect( rotator, SIGNAL(positionChanged(Entity::Vector)), this, SLOT(onPositionTestSound(Entity::Vector)) );

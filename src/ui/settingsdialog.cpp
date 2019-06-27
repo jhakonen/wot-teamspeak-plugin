@@ -24,7 +24,7 @@
 #include "../utils/logging.h"
 
 #include <QPushButton>
-#include <QTooltip>
+#include <QToolTip>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QFileInfo>

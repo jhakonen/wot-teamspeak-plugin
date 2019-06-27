@@ -47,6 +47,20 @@ void reset()
 	}
 }
 
+QStringList queryOutputDeviceNames()
+{
+	QStringList output;
+	ALCchar* results = (ALCchar*) OpenAL::Proxies::alcGetString( NULL, ALC_DEVICE_SPECIFIER );
+	ALCchar* nptr = results;
+	while( *( nptr += strlen( results ) + 1 ) != 0 )
+	{
+		output.append( QString( results ) );
+		results = nptr;
+	}
+	output.append( QString( results ) );
+	return output;
+}
+
 ALCdevice *queryDevice( const OutputInfo &info )
 {
 	if( !info.isValid() )
@@ -61,8 +75,23 @@ ALCdevice *queryDevice( const OutputInfo &info )
 	// create OpenAL device if it doesn't exist yet
 	if( !gOALDevices.contains( info.getDeviceName() ) )
 	{
-		QByteArray nameBytes = info.getDeviceName().toUtf8();
-		gOALDevices[info.getDeviceName()] = OpenAL::Proxies::alcOpenDevice( nameBytes.data() );
+		QStringList devices = queryOutputDeviceNames();
+		if( devices.contains( info.getDeviceName() ) )
+		{
+			QByteArray nameBytes = info.getDeviceName().toUtf8();
+			gOALDevices[info.getDeviceName()] = OpenAL::Proxies::alcOpenDevice( nameBytes.data() );
+		}
+		else if( devices.isEmpty() )
+		{
+			Log::error() << "No audio output devices found!";
+		}
+		else
+		{
+			Log::warning() << "Device '" << info.getDeviceName() << "' not found from list: " << devices.join(", ");
+			Log::warning() << "Using: '" << devices[0] << "'";
+			QByteArray nameBytes = devices[0].toUtf8();
+			gOALDevices[info.getDeviceName()] = OpenAL::Proxies::alcOpenDevice( nameBytes.data() );
+		}
 	}
 	return gOALDevices[info.getDeviceName()];
 }
@@ -171,8 +200,8 @@ void updateListenerOptions( const ListenerInfo &info )
 	ListenerInfo prevInfo = gListenerInfos[info.getOutputInfo()];
 	if( force || info.getForward() != prevInfo.getForward() || info.getUp() != prevInfo.getForward() )
 	{
-		ALfloat orientation[] = { info.getForward().x, info.getForward().y, info.getForward().z,
-								  info.getUp().x, info.getUp().y, info.getUp().z };
+		ALfloat orientation[] = { (ALfloat) info.getForward().x, (ALfloat) info.getForward().y, (ALfloat) info.getForward().z,
+								  (ALfloat) info.getUp().x, (ALfloat) info.getUp().y, (ALfloat) info.getUp().z };
 		OpenAL::Proxies::alListenerfv( AL_ORIENTATION, orientation );
 	}
 	if( force || info.getPosition() != prevInfo.getPosition() )

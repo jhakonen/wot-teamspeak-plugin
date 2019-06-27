@@ -25,7 +25,7 @@
 namespace Entity
 {
 class Vector;
-enum RotateMode;
+enum RotateMode : short;
 }
 
 class QTimer;

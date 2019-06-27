@@ -33,35 +33,35 @@ Log::Sink *gLogSink = NULL;
 namespace Log
 {
 
-Stream debug( const char *channel )
+std::shared_ptr<Stream> debug( const char *channel )
 {
-	Stream stream;
-	stream.channel = channel;
-	stream.severity = Debug;
+	std::shared_ptr<Stream> stream = std::make_shared<Stream>();
+	stream->channel = channel;
+	stream->severity = Debug;
 	return stream;
 }
 
-Stream info( const char *channel )
+std::shared_ptr<Stream> info( const char *channel )
 {
-	Stream stream;
-	stream.channel = channel;
-	stream.severity = Info;
+	std::shared_ptr<Stream> stream = std::make_shared<Stream>();
+	stream->channel = channel;
+	stream->severity = Info;
 	return stream;
 }
 
-Stream warning( const char *channel )
+std::shared_ptr<Stream> warning( const char *channel )
 {
-	Stream stream;
-	stream.channel = channel;
-	stream.severity = Warning;
+	std::shared_ptr<Stream> stream = std::make_shared<Stream>();
+	stream->channel = channel;
+	stream->severity = Warning;
 	return stream;
 }
 
-Stream error( const char *channel )
+std::shared_ptr<Stream> error( const char *channel )
 {
-	Stream stream;
-	stream.channel = channel;
-	stream.severity = Error;
+	std::shared_ptr<Stream> stream = std::make_shared<Stream>();
+	stream->channel = channel;
+	stream->severity = Error;
 	return stream;
 }
 
@@ -78,23 +78,23 @@ Stream::~Stream()
 	}
 }
 
-Stream &operator<<( Stream &stream, const QString &value )
+std::shared_ptr<Stream> operator<<( std::shared_ptr<Stream> stream, const QString &value )
 {
-	QTextStream textStream( &stream.message );
+	QTextStream textStream( &stream->message );
 	textStream << value;
 	return stream;
 }
 
-Stream &operator<<( Stream &stream, quint16 value )
+std::shared_ptr<Stream> operator<<( std::shared_ptr<Stream> stream, quint16 value )
 {
-	QTextStream textStream( &stream.message );
+	QTextStream textStream( &stream->message );
 	textStream << value;
 	return stream;
 }
 
-Stream &operator<<( Stream &stream, const Entity::Vector &value )
+std::shared_ptr<Stream> operator<<( std::shared_ptr<Stream> stream, const Entity::Vector &value )
 {
-	QTextStream textStream( &stream.message );
+	QTextStream textStream( &stream->message );
 	textStream << "(" << value.x << ", " << value.y << ", " << value.z << ")";
 	return stream;
 }
@@ -109,6 +109,7 @@ void qtMessageHandler( QtMsgType type, const QMessageLogContext &context, const 
 	switch( type )
 	{
 	case QtDebugMsg:
+	case QtInfoMsg:
 		debug() << formattedMessage;
 		break;
 	case QtWarningMsg:

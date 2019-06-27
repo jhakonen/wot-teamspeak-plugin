@@ -31,15 +31,6 @@
 #include <QDesktopServices>
 #include <QUrl>
 
-namespace {
-
-bool notInGameOrChat( const Entity::User &user )
-{
-	return !user.inGame && !user.inChat;
-}
-
-}
-
 namespace UseCase
 {
 

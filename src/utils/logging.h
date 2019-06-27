@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QString>
+#include <memory>
 
 class QFile;
 
@@ -43,10 +44,10 @@ enum Severity
 	Error
 };
 
-Stream debug( const char *channel = "TessuMod Plugin" );
-Stream info( const char *channel = "TessuMod Plugin" );
-Stream warning( const char *channel = "TessuMod Plugin" );
-Stream error( const char *channel = "TessuMod Plugin" );
+std::shared_ptr<Stream> debug( const char *channel = "TessuMod Plugin" );
+std::shared_ptr<Stream> info( const char *channel = "TessuMod Plugin" );
+std::shared_ptr<Stream> warning( const char *channel = "TessuMod Plugin" );
+std::shared_ptr<Stream> error( const char *channel = "TessuMod Plugin" );
 
 void setSink( Sink *sink );
 
@@ -80,8 +81,8 @@ public:
 	Severity severity;
 };
 
-Stream& operator<<( Stream &stream, const QString &value );
-Stream& operator<<( Stream &stream, quint16 value );
-Stream& operator<<( Stream &stream, const Entity::Vector &value );
+std::shared_ptr<Stream> operator<<( std::shared_ptr<Stream> stream, const QString &value );
+std::shared_ptr<Stream> operator<<( std::shared_ptr<Stream> stream, quint16 value );
+std::shared_ptr<Stream> operator<<( std::shared_ptr<Stream> stream, const Entity::Vector &value );
 
 }
