@@ -15,11 +15,11 @@ This plugin is available for download in myteamspeak.com at:
 Configuration
 -------------
 Plugin's settings can be found from TeamSpeak main window's menu:
-![](https://github.com/jhakonen/wot-teamspeak-mod/blob/master/docs/wiki/plugin_settings_menu.png)
+![](https://github.com/jhakonen/wot-teamspeak-plugin/blob/master/docs/wiki/plugin_settings_menu.png)
 
 The dialog which opens provides following settings:
 
-![](https://github.com/jhakonen/wot-teamspeak-mod/blob/master/docs/wiki/plugin_settings_dialogs.png)
+![](https://github.com/jhakonen/wot-teamspeak-plugin/blob/master/docs/wiki/plugin_settings_dialogs.png)
 
 You can find more information when you hover mouse over the different UI controls within the dialog for tooltips of what each control does.
 
@@ -38,7 +38,7 @@ You have basically three possible ways you can configure your headphones, listed
 
 #### OpenAL + HRTF
 Perhaps best results you would get by selecting **OpenAL Soft** and checking **Enable HRTF**. The idea is that TeamSpeak (with help of OpenAL's HRTF-feature) adds audio cues to the stereo output signal which alter the audio to make it sound like it comes from a certain direction:
-![](https://github.com/jhakonen/wot-teamspeak-mod/blob/master/docs/wiki/audio_flows_hrtf.png)
+![](https://github.com/jhakonen/wot-teamspeak-plugin/blob/master/docs/wiki/audio_flows_hrtf.png)
 
 With those options voices are positioned so that you can tell if the voice is coming from left, right, front, back, below or above you (or somewhere between). 
 
@@ -58,7 +58,7 @@ When you find a data set that works for you just leave it selected and it will b
 #### Virtual Surround
 
 Your sound card or integrated audio chip, or perhaps your headphones or a separate software might provide virtual surround support. Usually the virtual surround means something that converts 5.1 or 7.1 multichannel audio to stereo adding audio cues into the output signal:
-![](https://github.com/jhakonen/wot-teamspeak-mod/blob/master/docs/wiki/audio_flows_virtual_surround.png)
+![](https://github.com/jhakonen/wot-teamspeak-plugin/blob/master/docs/wiki/audio_flows_virtual_surround.png)
 
 With virtual surround voices are positioned so that you can tell if the voice is coming from left, right, front or back (or somewhere between). Do note though that none of these provide ability to position audio below or above you.
 
@@ -76,7 +76,7 @@ See if your hardware already supports one of these.
 
 #### Stereo Only
 Perhaps the worst choice. TeamSpeak outputs stereo audio which is fed as is to headphones:
-![](https://github.com/jhakonen/wot-teamspeak-mod/blob/master/docs/wiki/audio_flows_stereo.png)
+![](https://github.com/jhakonen/wot-teamspeak-plugin/blob/master/docs/wiki/audio_flows_stereo.png)
 
 With this you can only hear if the sound is coming from left or right side (or somewhere between), no positioning to front, back, above or below will occur.
 
@@ -86,7 +86,7 @@ To use this select either **OpenAL Soft** or **TeamSpeak's Built-in Audio**. Mak
 Audio positioning accuracy depends greatly from amount of speakers you have connected.
 
 With this choice TeamSpeak outputs whatever audio channels your sound card is configured to use and sound card then pipes the signals to your speakers:
-![](https://github.com/jhakonen/wot-teamspeak-mod/blob/master/docs/wiki/audio_flows_speakers.png)
+![](https://github.com/jhakonen/wot-teamspeak-plugin/blob/master/docs/wiki/audio_flows_speakers.png)
 
 Note that audio can be positioned at best to your left, right, front or back side (or somewhere between) if you have four or more speakers connected. No positioning to your above or below will occur.
 
