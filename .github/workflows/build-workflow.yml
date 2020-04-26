@@ -27,7 +27,8 @@ jobs:
 
     # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Fetch all tags
+      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Get previous git tag
       id: previoustag
       uses: ./.github/actions/github-action-get-previous-tag # WyriHaximus/github-action-get-previous-tag@master
@@ -42,24 +43,25 @@ jobs:
         replace-with: $1
 
     # Build the plugin
-    - name: qmake
-      run: qmake "PLUGIN_VERSION = $PLUGIN_VERSION"
+    - name: Build package
+      id: package
+      run: |
+        qmake "PLUGIN_VERSION = $PLUGIN_VERSION"
+        make package
       env:
         PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
-    - name: make
-      run: make package
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-plugin
-        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_linux_amd64.ts3_plugin
+        path: ${{ steps.package.outputs.plugin-artifact }}
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-dbgsymbols
-        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_linux_amd64_dbg.zip
+        path: ${{ steps.package.outputs.debugsymbols-artifact }}
 
   build-windows:
     runs-on: windows-latest
@@ -84,7 +86,8 @@ jobs:
 
     # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Fetch all tags
+      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Get previous git tag
       id: previoustag
       uses: ./.github/actions/github-action-get-previous-tag # WyriHaximus/github-action-get-previous-tag@master
@@ -100,6 +103,7 @@ jobs:
 
     # Build the plugin
     - name: Build package
+      id: package
       shell: cmd
       run: |
         rem Get rid of Windows Driver Kit as vcvarsall.bat would use that instead of Windows 10 SDK
@@ -121,9 +125,9 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: windows-plugin
-        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_win64.ts3_plugin
+        path: ${{ steps.package.outputs.plugin-artifact }}
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: windows-dbgsymbols
-        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_win64_dbg.zip
+        path: ${{ steps.package.outputs.debugsymbols-artifact }}
