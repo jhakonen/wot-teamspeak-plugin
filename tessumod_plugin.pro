@@ -104,9 +104,9 @@ ts3_plugin.commands = python $$PWD/bin/make-installer.py \
 	"$$PWD/etc/hrtfs/*.mhr"
 win32:ts3_plugin.commands += "$$PWD/bin/OpenAL64.dll"
 
-# Tell Github Actions workflow the locations of the build artifacts
-message("::set-output name=plugin-artifact::$${ts3_plugin.target}")
-message("::set-output name=debugsymbols-artifact::$${debugsymbols.target}")
+# Tell Github Actions workflow the locations of our build artifacts
+system(echo "::set-output name=plugin-artifact::$${ts3_plugin.target}")
+system(echo "::set-output name=debugsymbols-artifact::$${debugsymbols.target}")
 
 # Umbrella target for creating both installer and associated debugging symbols
 package.target = package
