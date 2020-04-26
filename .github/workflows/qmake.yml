@@ -60,14 +60,17 @@ jobs:
         arch: win64_msvc2015_64
 
     - name: Install Visual Studio 2015 build tools
-      run: choco install -y visualcppbuildtools -packageParameters "--Features Win10SDK_VisibleV1"
+      run: choco install -y visualcppbuildtools
 
     # Build plugin package
     - uses: actions/checkout@v2
     - name: Build package
       shell: cmd
       run: |
+        rem Get rid of Windows Driver Kit as vcvarsall.bat would use that instead of Windows 10 SDK
+        rem For more info see: https://stackoverflow.com/a/32897691 
         rmdir /s /q "C:\Program Files (x86)\Windows Kits\10\include\wdf"
+
         call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
         qmake
         nmake package
