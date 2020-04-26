@@ -30,7 +30,7 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Get previous git tag
       id: previoustag
-      uses: WyriHaximus/github-action-get-previous-tag@master
+      uses: actions/github-action-get-previous-tag@master # WyriHaximus/github-action-get-previous-tag@master
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
     - name: Parse version string
@@ -87,7 +87,7 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Get previous git tag
       id: previoustag
-      uses: WyriHaximus/github-action-get-previous-tag@master
+      uses: actions/github-action-get-previous-tag@master # WyriHaximus/github-action-get-previous-tag@master
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
     - name: Parse version string
