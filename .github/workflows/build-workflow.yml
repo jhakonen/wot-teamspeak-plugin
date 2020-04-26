@@ -33,12 +33,19 @@ jobs:
       uses: WyriHaximus/github-action-get-previous-tag@master
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Parse version string
+      id: version
+      uses: frabert/replace-string-action@v1.1
+      with:
+        pattern: v([.0-9]+)
+        string: ${{ steps.previoustag.outputs.tag }}
+        replace-with: $1
 
     # Build the plugin
     - name: qmake
       run: qmake "PLUGIN_VERSION = $PLUGIN_VERSION"
       env:
-        PLUGIN_VERSION: ${{ steps.previoustag.outputs.tag }}
+        PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
     - name: make
       run: make package
 
@@ -47,12 +54,12 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-plugin
-        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_linux_amd64.ts3_plugin
+        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_linux_amd64.ts3_plugin
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-dbgsymbols
-        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_linux_amd64_dbg.zip
+        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_linux_amd64_dbg.zip
 
   build-windows:
     runs-on: windows-latest
@@ -83,6 +90,13 @@ jobs:
       uses: WyriHaximus/github-action-get-previous-tag@master
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Parse version string
+      id: version
+      uses: frabert/replace-string-action@v1.1
+      with:
+        pattern: v([.0-9]+)
+        string: ${{ steps.previoustag.outputs.tag }}
+        replace-with: $1
 
     # Build the plugin
     - name: Build package
@@ -100,16 +114,16 @@ jobs:
         qmake "PLUGIN_VERSION = %PLUGIN_VERSION%"
         nmake package
       env:
-        PLUGIN_VERSION: ${{ steps.previoustag.outputs.tag }}
+        PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
       with:
         name: windows-plugin
-        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_win64.ts3_plugin
+        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_win64.ts3_plugin
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: windows-dbgsymbols
-        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_win64_dbg.zip
+        path: tessumod_plugin_${{ steps.version.outputs.replaced }}_win64_dbg.zip
