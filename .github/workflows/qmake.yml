@@ -15,8 +15,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
-      versions: 5.12.3
-      host: linux
+      with:
+        version: 5.12.3
+        host: linux
     - name: qmake
       run: qmake
     - name: make
