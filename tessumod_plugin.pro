@@ -19,7 +19,9 @@
 PLUGIN_NAME        = "TessuMod Plugin"
 PLUGIN_DESCRIPTION = "This plugin provides support for 3D audio, with help of TessuMod, it positions users voice in TeamSpeak so that their voices appear to come from their vehicle's direction on battlefield."
 PLUGIN_AUTHOR      = "Janne Hakonen (jhakonen @ WOT EU server)"
-PLUGIN_VERSION     = "0.8.0"
+
+# Plugin version is usually provided from Github Actions workflow
+!defined(PLUGIN_VERSION, var):PLUGIN_VERSION = "development"
 
 TARGET = tessumod_plugin
 TEMPLATE = lib
