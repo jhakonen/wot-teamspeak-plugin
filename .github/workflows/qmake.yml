@@ -71,6 +71,8 @@ jobs:
         rem For more info see: https://stackoverflow.com/a/32897691 
         rmdir /s /q "C:\Program Files (x86)\Windows Kits\10\include\wdf"
 
+        dir rc.exe /s /p
+
         call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
         qmake
         nmake package
