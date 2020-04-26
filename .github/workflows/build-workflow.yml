@@ -1,10 +1,8 @@
-name: Build CI
+name: Build the plugin on push or PR
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+- push
+- pull_request
 
 env:
   QT_VERSION: 5.12.3
@@ -28,8 +26,10 @@ jobs:
         host: linux
     # Build plugin package
     - uses: actions/checkout@v2
+    - name: Get tag name
+      uses: olegtarasov/get-tag@v2
     - name: qmake
-      run: qmake
+      run: qmake "PLUGIN_VERSION = $GIT_TAG_NAME"
     - name: make
       run: make package
     # Upload plugin files for releasing
@@ -37,12 +37,12 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-plugin
-        path: tessumod_plugin_0.8.0_linux_amd64.ts3_plugin
+        path: tessumod_plugin_${{ GIT_TAG_NAME }}_linux_amd64.ts3_plugin
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-dbgsymbols
-        path: tessumod_plugin_0.8.0_linux_amd64_dbg.zip
+        path: tessumod_plugin_${{ GIT_TAG_NAME }}_linux_amd64_dbg.zip
 
   build-windows:
     runs-on: windows-latest
@@ -71,6 +71,8 @@ jobs:
 
     # Build plugin package
     - uses: actions/checkout@v2
+    - name: Get tag name
+      uses: olegtarasov/get-tag@v2
     - name: Build package
       shell: cmd
       run: |
@@ -83,16 +85,16 @@ jobs:
         rem Add a directory with rc.exe to PATH
         set PATH=%PATH%;c:\Program Files (x86)\Windows Kits\8.1\bin\x64
 
-        qmake
+        qmake "PLUGIN_VERSION = %GIT_TAG_NAME%"
         nmake package
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
       with:
         name: windows-plugin
-        path: tessumod_plugin_0.8.0_win64.ts3_plugin
+        path: tessumod_plugin_${{ GIT_TAG_NAME }}_win64.ts3_plugin
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: windows-dbgsymbols
-        path: tessumod_plugin_0.8.0_win64_dbg.zip
+        path: tessumod_plugin_${{ GIT_TAG_NAME }}_win64_dbg.zip
