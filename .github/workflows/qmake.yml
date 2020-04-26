@@ -60,7 +60,7 @@ jobs:
         arch: win64_msvc2015_64
 
     - name: Install Visual Studio 2015 build tools
-      run: choco install -y visualcppbuildtools
+      run: choco install -y visualcppbuildtools -packageParameters "--Features Win10SDK_VisibleV1"
 
     # Build plugin package
     - uses: actions/checkout@v2
