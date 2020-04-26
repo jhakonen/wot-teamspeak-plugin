@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build-ubuntu:
     runs-on: ubuntu-latest
     steps:
     # Install and cache Qt
@@ -23,10 +23,54 @@ jobs:
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
         version: 5.12.3
         host: linux
-
     # Build plugin package
     - uses: actions/checkout@v2
     - name: qmake
       run: qmake
     - name: make
       run: make package
+    # Upload plugin files for releasing
+    - name: Upload plugin installer artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: windows-plugin
+        path: tessumod_plugin_0.8.0_linux_amd64.ts3_plugin
+    - name: Upload debugging symbols
+      uses: actions/upload-artifact@v1
+      with:
+        name: windows-dbgsymbols
+        path: tessumod_plugin_0.8.0_linux_amd64_dbg.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    # Install and cache Qt
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-QtCache
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        version: 5.12.3
+        host: windows
+    # Build plugin package
+    - uses: actions/checkout@v2
+    - name: qmake
+      run: qmake
+    - name: nmake
+      run: nmake package
+    # Upload plugin files for releasing
+    - name: Upload plugin installer artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: windows-plugin
+        path: tessumod_plugin_0.8.0_win64.ts3_plugin
+    - name: Upload debugging symbols
+      uses: actions/upload-artifact@v1
+      with:
+        name: windows-dbgsymbols
+        path: tessumod_plugin_0.8.0_win64_dbg.zip
