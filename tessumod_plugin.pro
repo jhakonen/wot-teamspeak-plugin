@@ -90,9 +90,6 @@ debugsymbols.target = "$${OUT_PWD}/$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATF
 debugsymbols.depends = $$BUILD_TARGET
 debugsymbols.commands = python $$PWD/bin/make-dbg-archive.py "$${debugsymbols.target}" "$${DEBUG_FILE_PATH}"
 
-# Tell Github actions workflow where the debug symbols artifact is
-debugsymbols.commands += "&& echo ::set-output name=debugsymbols-artifact::$${debugsymbols.target}"
-
 # Target for creating .ts3_plugin installer file, allows easy install of the
 # plugin by the end user. This should be the one that is uploaded to myteamspeak.com
 ts3_plugin.target = "$${OUT_PWD}/$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}.ts3_plugin"
@@ -107,8 +104,9 @@ ts3_plugin.commands = python $$PWD/bin/make-installer.py \
 	"$$PWD/etc/hrtfs/*.mhr"
 win32:ts3_plugin.commands += "$$PWD/bin/OpenAL64.dll"
 
-# Tell Github actions workflow where the plugin artifact is
-ts3_plugin.commands += "&& echo ::set-output name=plugin-artifact::$${ts3_plugin.target}"
+# Tell Github Actions workflow the locations of the build artifacts
+message("::set-output name=plugin-artifact::$${ts3_plugin.target}")
+message("::set-output name=debugsymbols-artifact::$${debugsymbols.target}")
 
 # Umbrella target for creating both installer and associated debugging symbols
 package.target = package
