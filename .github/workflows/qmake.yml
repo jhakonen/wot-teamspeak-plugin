@@ -57,18 +57,19 @@ jobs:
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
         version: 5.12.3
         host: windows
+        arch: win64_msvc2015_64
 
     - name: Install Visual Studio 2015 build tools
-      run: choco install visualcppbuildtools
+      run: choco install -y visualcppbuildtools
 
     # Build plugin package
     - uses: actions/checkout@v2
-    - name: Configure C++ compiler
-      run: call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64 8.1
-    - name: qmake
-      run: qmake
-    - name: nmake
-      run: nmake package
+    - name: Build package
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+        qmake
+        nmake package
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
