@@ -6,7 +6,6 @@ on:
 
 env:
   QT_VERSION: 5.12.3
-  TAG_REGEX: v([0-9.]+)
 
 jobs:
   build-ubuntu:
@@ -25,27 +24,34 @@ jobs:
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
         version: ${{ env.QT_VERSION }}
         host: linux
-    # Build plugin package
+
+    # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
-    - name: Get tag name
-      uses: olegtarasov/get-tag@v2
-      with:
-        tagRegex: ${{ env.TAG_REGEX }}
+    - name: Get previous git tag
+      id: previoustag
+      uses: WyriHaximus/github-action-get-previous-tag@master
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+    # Build the plugin
     - name: qmake
-      run: qmake "PLUGIN_VERSION = $GIT_TAG_NAME"
+      run: qmake "PLUGIN_VERSION = $PLUGIN_VERSION"
+      env:
+        PLUGIN_VERSION: ${{ steps.previoustag.outputs.tag }}
     - name: make
       run: make package
+
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-plugin
-        path: tessumod_plugin_${{ env.GIT_TAG_NAME }}_linux_amd64.ts3_plugin
+        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_linux_amd64.ts3_plugin
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: ubuntu-dbgsymbols
-        path: tessumod_plugin_${{ env.GIT_TAG_NAME }}_linux_amd64_dbg.zip
+        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_linux_amd64_dbg.zip
 
   build-windows:
     runs-on: windows-latest
@@ -68,16 +74,15 @@ jobs:
     - name: Install Visual Studio 2015 build tools
       run: choco install -y visualcppbuildtools
 
-    # - run: dir rc.exe /s /p
-    #   shell: cmd
-    #   working-directory: c:\
-
-    # Build plugin package
+    # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
-    - name: Get tag name
-      uses: olegtarasov/get-tag@v2
-      with:
-        tagRegex: ${{ env.TAG_REGEX }}
+    - name: Get previous git tag
+      id: previoustag
+      uses: WyriHaximus/github-action-get-previous-tag@master
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+    # Build the plugin
     - name: Build package
       shell: cmd
       run: |
@@ -90,16 +95,19 @@ jobs:
         rem Add a directory with rc.exe to PATH
         set PATH=%PATH%;c:\Program Files (x86)\Windows Kits\8.1\bin\x64
 
-        qmake "PLUGIN_VERSION = %GIT_TAG_NAME%"
+        qmake "PLUGIN_VERSION = %PLUGIN_VERSION%"
         nmake package
+      env:
+        PLUGIN_VERSION: ${{ steps.previoustag.outputs.tag }}
+
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
       with:
         name: windows-plugin
-        path: tessumod_plugin_${{ env.GIT_TAG_NAME }}_win64.ts3_plugin
+        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_win64.ts3_plugin
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
         name: windows-dbgsymbols
-        path: tessumod_plugin_${{ env.GIT_TAG_NAME }}_win64_dbg.zip
+        path: tessumod_plugin_${{ steps.previoustag.outputs.tag }}_win64_dbg.zip
