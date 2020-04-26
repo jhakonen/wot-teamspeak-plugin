@@ -62,9 +62,9 @@ jobs:
     - name: Install Visual Studio 2015 build tools
       run: choco install -y visualcppbuildtools
 
-    - run: dir rc.exe /s /p
-      shell: cmd
-      working-directory: c:\
+    # - run: dir rc.exe /s /p
+    #   shell: cmd
+    #   working-directory: c:\
 
     # Build plugin package
     - uses: actions/checkout@v2
@@ -76,6 +76,10 @@ jobs:
         rmdir /s /q "C:\Program Files (x86)\Windows Kits\10\include\wdf"
 
         call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+
+        rem Add a directory with rc.exe to PATH
+        set PATH=%PATH%;c:\Program Files (x86)\Windows Kits\8.1\bin\x64
+
         qmake
         nmake package
     # Upload plugin files for releasing
