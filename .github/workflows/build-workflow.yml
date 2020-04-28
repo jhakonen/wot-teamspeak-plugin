@@ -8,8 +8,19 @@ env:
   QT_VERSION: 5.12.3
 
 jobs:
-  build-ubuntu:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        config:
+          - os: ubuntu
+            arch: null
+            build-cmd: .github/workflows/build-ubuntu.sh
+          - os: windows
+            arch: win64_msvc2015_64
+            build-cmd: .github\workflows\build-windows.cmd
+
+    runs-on: ${{ matrix.config.os }}-latest
+
     steps:
     # Install and cache Qt
     - name: Cache Qt
@@ -17,13 +28,13 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ../Qt
-        key: ${{ runner.os }}-${{ env.QT_VERSION }}-QtCache
+        key: ${{ matrix.config.os }}-${{ env.QT_VERSION }}-QtCache
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         cached: ${{ steps.cache-qt.outputs.cache-hit }}
         version: ${{ env.QT_VERSION }}
-        host: linux
+        arch: ${{ matrix.config.arch }}
 
     # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
@@ -42,92 +53,24 @@ jobs:
         string: ${{ steps.previoustag.outputs.tag }}
         replace-with: $1
 
-    # Build the plugin
-    - name: Build package
-      id: package
-      run: |
-        qmake "PLUGIN_VERSION = $PLUGIN_VERSION"
-        make package
-      env:
-        PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
-
-    # Upload plugin files for releasing
-    - name: Upload plugin installer artifact
-      uses: actions/upload-artifact@v1
-      with:
-        name: ubuntu-plugin
-        path: ${{ steps.package.outputs.plugin-artifact }}
-    - name: Upload debugging symbols
-      uses: actions/upload-artifact@v1
-      with:
-        name: ubuntu-dbgsymbols
-        path: ${{ steps.package.outputs.debugsymbols-artifact }}
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-    # Install and cache Qt
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v1
-      with:
-        path: ../Qt
-        key: ${{ runner.os }}-${{ env.QT_VERSION }}-QtCache
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
-        version: ${{ env.QT_VERSION }}
-        host: windows
-        arch: win64_msvc2015_64
-
-    - name: Install Visual Studio 2015 build tools
+    # Setup Windows build environment
+    - name: Install Visual Studio 2015 build tools (Windows)
       run: choco install -y visualcppbuildtools
-
-    # Checkout sources and get plugin version string from latest tag
-    - uses: actions/checkout@v2
-    - name: Fetch all tags
-      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Get previous git tag
-      id: previoustag
-      uses: ./.github/actions/github-action-get-previous-tag # WyriHaximus/github-action-get-previous-tag@master
-      env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-    - name: Parse version string
-      id: version
-      uses: frabert/replace-string-action@v1.1
-      with:
-        pattern: v([.0-9]+)
-        string: ${{ steps.previoustag.outputs.tag }}
-        replace-with: $1
+      if: ${{ matrix.config.os == 'windows' }}
 
     # Build the plugin
-    - name: Build package
+    - name: Build plugin package
       id: package
-      shell: cmd
-      run: |
-        rem Get rid of Windows Driver Kit as vcvarsall.bat would use that instead of Windows 10 SDK
-        rem For more info see: https://stackoverflow.com/a/32897691 
-        rmdir /s /q "C:\Program Files (x86)\Windows Kits\10\include\wdf"
-
-        call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-
-        rem Add a directory with rc.exe to PATH
-        set PATH=%PATH%;c:\Program Files (x86)\Windows Kits\8.1\bin\x64
-
-        qmake "PLUGIN_VERSION = %PLUGIN_VERSION%"
-        nmake package
-      env:
-        PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
+      run: ${{ matrix.config.build-cmd }} ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
       with:
-        name: windows-plugin
+        name: ${{ matrix.config.os }}-plugin
         path: ${{ steps.package.outputs.plugin-artifact }}
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
-        name: windows-dbgsymbols
+        name: ${{ matrix.config.os }}-dbgsymbols
         path: ${{ steps.package.outputs.debugsymbols-artifact }}
