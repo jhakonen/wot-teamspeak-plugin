@@ -5,7 +5,7 @@ RUN true \
     && apt-get install --no-install-recommends --yes \
         build-essential \
         qt5-default \
-        python2.7 \
+        python \
     && rm -rf /var/cache/apt/archives \
     && true
 
