@@ -1,9 +1,6 @@
 name: Build
 description: Builds the plugin and packages it
 inputs:
-  os:
-    description: Operating System
-    required: true
   version:
     description: Version string to use
     required: true
@@ -14,6 +11,6 @@ outputs:
     description: Path to generated debugging symbols file
 runs:
   using: 'docker'
-  image: Dockerfile-${{ inputs.os }}
+  image: Dockerfile
   args:
     - ${{ inputs.version }}
