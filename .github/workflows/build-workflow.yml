@@ -62,11 +62,12 @@ jobs:
     # - name: Build plugin package
     #   id: package
     #   run: ${{ matrix.config.build-cmd }} ${{ steps.version.outputs.replaced }}
-    - name: Build plugin package
+    - name: Build plugin package (Ubuntu)
       id: package
-      uses: ./.github/actions/build-${{ matrix.config.os }}-docker-action
+      uses: ./.github/actions/build-ubuntu-docker-action
       with:
         version: ${{ steps.version.outputs.replaced }}
+      if: ${{ matrix.config.os == 'ubuntu' }}
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
