@@ -15,26 +15,26 @@ jobs:
           - os: ubuntu
             arch: null
             build-cmd: .github/workflows/build-ubuntu.sh
-          - os: windows
-            arch: win64_msvc2015_64
-            build-cmd: .github\workflows\build-windows.cmd
+          # - os: windows
+          #   arch: win64_msvc2015_64
+          #   build-cmd: .github\workflows\build-windows.cmd
 
     runs-on: ${{ matrix.config.os }}-latest
 
     steps:
-    # Install and cache Qt
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v1
-      with:
-        path: ../Qt
-        key: ${{ matrix.config.os }}-${{ env.QT_VERSION }}-QtCache
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
-        version: ${{ env.QT_VERSION }}
-        arch: ${{ matrix.config.arch }}
+    # # Install and cache Qt
+    # - name: Cache Qt
+    #   id: cache-qt
+    #   uses: actions/cache@v1
+    #   with:
+    #     path: ../Qt
+    #     key: ${{ matrix.config.os }}-${{ env.QT_VERSION }}-QtCache
+    # - name: Install Qt
+    #   uses: jurplel/install-qt-action@v2
+    #   with:
+    #     cached: ${{ steps.cache-qt.outputs.cache-hit }}
+    #     version: ${{ env.QT_VERSION }}
+    #     arch: ${{ matrix.config.arch }}
 
     # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
@@ -53,15 +53,21 @@ jobs:
         string: ${{ steps.previoustag.outputs.tag }}
         replace-with: $1
 
-    # Setup Windows build environment
-    - name: Install Visual Studio 2015 build tools (Windows)
-      run: choco install -y visualcppbuildtools
-      if: ${{ matrix.config.os == 'windows' }}
+    # # Setup Windows build environment
+    # - name: Install Visual Studio 2015 build tools (Windows)
+    #   run: choco install -y visualcppbuildtools
+    #   if: ${{ matrix.config.os == 'windows' }}
 
     # Build the plugin
+    # - name: Build plugin package
+    #   id: package
+    #   run: ${{ matrix.config.build-cmd }} ${{ steps.version.outputs.replaced }}
     - name: Build plugin package
       id: package
-      run: ${{ matrix.config.build-cmd }} ${{ steps.version.outputs.replaced }}
+      uses: ./.github/actions/build-docker-action
+      with:
+        os: ${{ matrix.config.os }}
+        version: ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
