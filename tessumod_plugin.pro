@@ -72,6 +72,9 @@ win32 {
 TARGET_FILE_PATH = "$${DESTDIR}/$${TARGET}.$${LIBRARY_EXTENSION}"
 DEBUG_FILE_PATH = "$${DESTDIR}/$${TARGET}.$${DEBUG_SYMBOLS_EXTENSION}"
 
+PLUGIN_ARTIFACT="$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}.ts3_plugin"
+DBGSYMBOLS_ARTIFACT="$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}_dbg.zip"
+
 # Strip debug symbols and save them to a separate file. Only required in Linux
 # as MSVC in Windows can create the separate file by itself.
 linux:QMAKE_POST_LINK = "$$PWD/bin/strip-symbols" "$${TARGET_FILE_PATH}" "$${DEBUG_FILE_PATH}"
@@ -86,13 +89,13 @@ win32:BUILD_TARGET = release
 
 # Target for creating a compressed archive with the debugging symbol file
 # included, usefull for debugging crashes
-debugsymbols.target = "$${OUT_PWD}/$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}_dbg.zip"
+debugsymbols.target = "$${OUT_PWD}/$${DBGSYMBOLS_ARTIFACT}"
 debugsymbols.depends = $$BUILD_TARGET
 debugsymbols.commands = python $$PWD/bin/make-dbg-archive.py "$${debugsymbols.target}" "$${DEBUG_FILE_PATH}"
 
 # Target for creating .ts3_plugin installer file, allows easy install of the
 # plugin by the end user. This should be the one that is uploaded to myteamspeak.com
-ts3_plugin.target = "$${OUT_PWD}/$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}.ts3_plugin"
+ts3_plugin.target = "$${OUT_PWD}/$${PLUGIN_ARTIFACT}"
 ts3_plugin.depends = $$BUILD_TARGET
 ts3_plugin.commands = python $$PWD/bin/make-installer.py \
 	"$${ts3_plugin.target}" \
@@ -105,8 +108,8 @@ ts3_plugin.commands = python $$PWD/bin/make-installer.py \
 win32:ts3_plugin.commands += "$$PWD/bin/OpenAL64.dll"
 
 # Tell Github Actions workflow the locations of our build artifacts
-system(echo "::set-output name=plugin-artifact::$${ts3_plugin.target}")
-system(echo "::set-output name=debugsymbols-artifact::$${debugsymbols.target}")
+system(echo "::set-output name=plugin-artifact::$${PLUGIN_ARTIFACT}")
+system(echo "::set-output name=debugsymbols-artifact::$${DBGSYMBOLS_ARTIFACT}")
 
 # Umbrella target for creating both installer and associated debugging symbols
 package.target = package
