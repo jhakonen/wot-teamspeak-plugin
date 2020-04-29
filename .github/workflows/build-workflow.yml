@@ -64,9 +64,8 @@ jobs:
     #   run: ${{ matrix.config.build-cmd }} ${{ steps.version.outputs.replaced }}
     - name: Build plugin package
       id: package
-      uses: ./.github/actions/build-docker-action
+      uses: ./.github/actions/build-${{ matrix.config.os }}-docker-action
       with:
-        os: ${{ matrix.config.os }}
         version: ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing

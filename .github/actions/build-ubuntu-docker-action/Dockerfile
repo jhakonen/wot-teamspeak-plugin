@@ -7,6 +7,6 @@ RUN true \
     && rm -rf /var/cache/apt/archives \
     && true
 
-COPY ubuntu-entrypoint.sh /ubuntu-entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT ["/ubuntu-entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
