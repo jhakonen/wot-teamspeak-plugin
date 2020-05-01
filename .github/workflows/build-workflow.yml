@@ -83,7 +83,12 @@ jobs:
     #   if: ${{ matrix.config.os == 'ubuntu' }}
     - name: Build plugin package
       id: package
-      run: docker run --rm ${{ steps.docker-tag.outputs.name }} ${{ steps.version.outputs.replaced }}
+      run: |
+        docker run \
+          --rm \
+          --volume ${PWD}:/build \
+          ${{ steps.docker-tag.outputs.name }} \
+          ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact

@@ -9,6 +9,8 @@ RUN true \
     && rm -rf /var/cache/apt/archives \
     && true
 
+WORKDIR /build
+
 COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
