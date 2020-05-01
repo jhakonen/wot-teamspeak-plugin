@@ -52,6 +52,19 @@ jobs:
         pattern: v([.0-9]+)
         string: ${{ steps.previoustag.outputs.tag }}
         replace-with: $1
+    - name: Resolve Docker tag name
+      shell: bash
+      run: |
+        VERSION=${GITHUB_REF//[^0-9a-zA-Z]/-}
+        VERSION=${VERSION,,}
+        echo "::set-output name=name::docker.pkg.github.com/${{ github.repository }}/${{ matrix.config.os }}:$VERSION"
+      id: docker-tag
+    - name: Build Docker image
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | \
+          docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        docker build docker/${{ matrix.config.os }} -t ${{ steps.docker-tag.outputs.name }}
+        docker push ${{ steps.docker-tag.outputs.name }}
 
     # # Setup Windows build environment
     # - name: Install Visual Studio 2015 build tools (Windows)
@@ -62,12 +75,15 @@ jobs:
     # - name: Build plugin package
     #   id: package
     #   run: ${{ matrix.config.build-cmd }} ${{ steps.version.outputs.replaced }}
-    - name: Build plugin package (Ubuntu)
+    # - name: Build plugin package (Ubuntu)
+    #   id: package
+    #   uses: ./.github/actions/build-ubuntu-docker-action
+    #   with:
+    #     version: ${{ steps.version.outputs.replaced }}
+    #   if: ${{ matrix.config.os == 'ubuntu' }}
+    - name: Build plugin package
       id: package
-      uses: ./.github/actions/build-ubuntu-docker-action
-      with:
-        version: ${{ steps.version.outputs.replaced }}
-      if: ${{ matrix.config.os == 'ubuntu' }}
+      run: docker run --rm ${{ steps.docker-tag.outputs.name }} ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
