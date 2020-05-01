@@ -63,6 +63,7 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | \
           docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        docker pull ${{ steps.docker-tag.outputs.name }}
         docker build docker/${{ matrix.config.os }} -t ${{ steps.docker-tag.outputs.name }}
         docker push ${{ steps.docker-tag.outputs.name }}
 
