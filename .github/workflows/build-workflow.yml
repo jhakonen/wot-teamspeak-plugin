@@ -55,7 +55,7 @@ jobs:
           docker/${{ matrix.config.os }}
 
         if [ "${{ matrix.config.os }}" == "windows" ]; then
-          python3 -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
+          python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
         fi
         
         docker push --disable-content-trust ${{ steps.docker-tag.outputs.name }}
