@@ -13,9 +13,11 @@ jobs:
       matrix:
         config:
           - os: ubuntu
+            runner: ubuntu-latest
           - os: windows
+            runner: windows-2016
 
-    runs-on: ${{ matrix.config.os }}-latest
+    runs-on: ${{ matrix.config.runner }}
 
     steps:
     # Checkout sources and get plugin version string from latest tag

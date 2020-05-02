@@ -1,4 +1,4 @@
-FROM microsoft/windowsservercore:ltsc2016
+FROM windows/servercore:ltsc2016
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
