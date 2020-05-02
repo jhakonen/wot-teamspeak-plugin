@@ -53,7 +53,7 @@ jobs:
           --cache-from ${{ steps.docker-tag.outputs.name }} \
           -t ${{ steps.docker-tag.outputs.name }} \
           docker/${{ matrix.config.os }}
-        docker push ${{ steps.docker-tag.outputs.name }}
+        docker push --disable-content-trust ${{ steps.docker-tag.outputs.name }}
 
     - name: Build plugin package
       id: package
