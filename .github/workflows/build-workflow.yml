@@ -46,7 +46,7 @@ jobs:
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | \
           docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
-        docker pull ${{ steps.docker-tag.outputs.name }}
+        docker pull ${{ steps.docker-tag.outputs.name }} || true
         docker build \
           --cache-from ${{ steps.docker-tag.outputs.name }} \
           -t ${{ steps.docker-tag.outputs.name }} \
