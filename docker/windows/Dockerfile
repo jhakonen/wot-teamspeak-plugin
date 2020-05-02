@@ -4,8 +4,10 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2016
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-RUN Invoke-WebRequest 'https://go.microsoft.com/fwlink/?LinkId=691126' -OutFile 'visualcppbuildtools_full.exe' -UseBasicParsing ; \
-    Start-Process .\visualcppbuildtools_full.exe -ArgumentList '/NoRestart /S' -Wait ; \
+COPY AdminDeployment.xml /AdminDeployment.xml
+
+RUN Invoke-WebRequest 'http://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe' -OutFile 'visualcppbuildtools_full.exe' -UseBasicParsing ; \
+    Start-Process .\visualcppbuildtools_full.exe -ArgumentList '/NoRestart /AdminFile /AdminDeployment.xml' -Wait ; \
     Remove-Item visualcppbuildtools_full.exe
 
 RUN Write-Host 'Configuring environment'; \
@@ -20,6 +22,6 @@ RUN Write-Host 'Configuring environment'; \
 
 WORKDIR /build
 
-COPY entrypoint.sh /entrypoint.ps1
+COPY entrypoint.ps1 /entrypoint.ps1
 
 ENTRYPOINT ["/entrypoint.ps1"]
