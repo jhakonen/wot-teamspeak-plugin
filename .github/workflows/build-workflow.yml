@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         config:
-          - os: ubuntu
-            runner: ubuntu-latest
+          # - os: ubuntu
+          #   runner: ubuntu-latest
           - os: windows
             runner: windows-2016
 
@@ -57,8 +57,8 @@ jobs:
         if [ "${{ matrix.config.os }}" == "windows" ]; then
           echo '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/jhakonen/actions-test/windows"]}' > /C/ProgramData/Docker/config/daemon.json
           cat /C/ProgramData/Docker/config/daemon.json
-          docker-machine restart
-          # powershell -command ""
+          # docker-machine restart
+          powershell -command 'restart-service *docker*'
           # python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
         fi
         
