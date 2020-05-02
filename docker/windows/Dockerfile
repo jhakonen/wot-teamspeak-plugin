@@ -1,4 +1,6 @@
-FROM windows/servercore:ltsc2016
+# For images cached to Github runner see:
+#   https://github.com/actions/virtual-environments/blob/master/images/win/Windows2016-Readme.md
+FROM mcr.microsoft.com/windows/servercore:ltsc2016
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
