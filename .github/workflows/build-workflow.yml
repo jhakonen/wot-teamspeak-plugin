@@ -43,6 +43,16 @@ jobs:
         VERSION=${VERSION,,}
         echo "::set-output name=name::docker.pkg.github.com/${{ github.repository }}/${{ matrix.config.os }}:$VERSION"
       id: docker-tag
+
+    - name: Configure Docker (Windows)
+      run: |
+        Set-Content \
+            -Path 'C:\ProgramData\Docker\config\daemon.json' \
+            -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/jhakonen/actions-test/windows"]}'
+        Start-Process powershell -Wait -Verb runAs -ArgumentList '-Command "Restart-Service docker"'
+        Restart-Service docker
+      if: ${{ matrix.config.os == 'windows' }}
+
     - name: Build Docker image
       shell: bash
       run: |
@@ -54,14 +64,14 @@ jobs:
           -t ${{ steps.docker-tag.outputs.name }} \
           docker/${{ matrix.config.os }}
 
-        if [ "${{ matrix.config.os }}" == "windows" ]; then
-          echo '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/jhakonen/actions-test/windows"]}' > /C/ProgramData/Docker/config/daemon.json
-          cat /C/ProgramData/Docker/config/daemon.json
-          # docker-machine restart
-          powershell -command 'Stop-Service docker'
-          # powershell -command 'Start-Service docker'
-          # python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
-        fi
+        #if [ "${{ matrix.config.os }}" == "windows" ]; then
+        #  echo '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/jhakonen/actions-test/windows"]}' > /C/ProgramData/Docker/config/daemon.json
+        #  cat /C/ProgramData/Docker/config/daemon.json
+        #  # docker-machine restart
+        #  powershell -command 'Stop-Service docker'
+        #  # powershell -command 'Start-Service docker'
+        #  # python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
+        #fi
         
         docker push --disable-content-trust ${{ steps.docker-tag.outputs.name }}
 
