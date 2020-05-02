@@ -55,8 +55,10 @@ jobs:
           docker/${{ matrix.config.os }}
 
         if [ "${{ matrix.config.os }}" == "windows" ]; then
-          echo '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/${{ github.repository }}"]}' > /C/ProgramData/Docker/config/daemon.json
+          echo '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/jhakonen/actions-test/windows"]}' > /C/ProgramData/Docker/config/daemon.json
           cat /C/ProgramData/Docker/config/daemon.json
+          docker-machine restart
+          # powershell -command ""
           # python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
         fi
         
