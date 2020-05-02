@@ -47,7 +47,7 @@ jobs:
     - name: Configure Docker (Windows)
       run: |
         Write-Host 'Writing to daemon.json'
-        Set-Content -Path 'C:\ProgramData\Docker\config\daemon.json' -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/jhakonen/actions-test/windows"]}'
+        Set-Content -Path 'C:\ProgramData\Docker\config\daemon.json' -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com"]}'
         Write-Host 'Restarting Docker daemon'
         Start-Process powershell -Wait -Verb runAs -ArgumentList '-Command "Restart-Service docker"'
         Write-Host 'All done'
