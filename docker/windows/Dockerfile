@@ -7,7 +7,7 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 COPY AdminDeployment.xml /AdminDeployment.xml
 
 RUN Invoke-WebRequest 'http://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe' -OutFile 'visualcppbuildtools_full.exe' -UseBasicParsing ; \
-    Start-Process .\visualcppbuildtools_full.exe -ArgumentList '/NoRestart /Quiet /AdminFile /AdminDeployment.xml /Log $env:temp\vs.log' -Wait ; \
+    Start-Process .\visualcppbuildtools_full.exe -ArgumentList "/NoRestart /Quiet /AdminFile /AdminDeployment.xml /Log $env:temp\vs.log" -Wait ; \
     cat $env:temp\vs.log ; \
     Remove-Item visualcppbuildtools_full.exe
 
