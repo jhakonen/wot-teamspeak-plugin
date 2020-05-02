@@ -55,15 +55,9 @@ jobs:
           docker/${{ matrix.config.os }}
 
         if [ "${{ matrix.config.os }}" == "windows" ]; then
-          echo ==== /C
-          ls -l /C
-          echo ==== /C/ProgramData/
-          ls -l /C/ProgramData/
-          echo ==== /C/ProgramData/Docker/
-          ls -l /C/ProgramData/Docker/
-          echo ==== /C/ProgramData/Docker/config/
-          ls -l /C/ProgramData/Docker/config/
-          python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
+          echo '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/${{ github.repository }}"]}' > /C/ProgramData/Docker/config/daemon.json
+          cat /C/ProgramData/Docker/config/daemon.json
+          # python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
         fi
         
         docker push --disable-content-trust ${{ steps.docker-tag.outputs.name }}
