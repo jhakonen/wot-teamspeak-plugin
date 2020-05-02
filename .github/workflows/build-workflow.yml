@@ -51,6 +51,7 @@ jobs:
         Write-Host 'Restarting Docker daemon'
         Start-Process powershell -Wait -Verb runAs -ArgumentList '-Command "Restart-Service docker"'
         Write-Host 'All done'
+        Get-EventLog -LogName Application -Source Docker -After (Get-Date).AddMinutes(-1)
       if: ${{ matrix.config.os == 'windows' }}
 
     - name: Build Docker image
