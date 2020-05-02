@@ -59,7 +59,7 @@ jobs:
           cat /C/ProgramData/Docker/config/daemon.json
           # docker-machine restart
           powershell -command 'Stop-Service docker'
-          powershell -command 'Start-Service docker'
+          # powershell -command 'Start-Service docker'
           # python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
         fi
         
