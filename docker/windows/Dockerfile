@@ -12,18 +12,17 @@ RUN Invoke-WebRequest \
 
 RUN Start-Process .\visualcppbuildtools_full.exe -Wait -ArgumentList '/NoRestart /Quiet /Layout C:\build\layout'
 
-RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_Tools.X86.Nat\VC_Tools.X86.Nat.msi" /qn TARGETDIR=C:\build\tools'
-RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualCppBuildTools_Core\VisualCppBuildTools_Core.msi" /qn TARGETDIR=C:\build\tools'
+RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_CRT.Headers\VC_CRT.Headers.msi" /qn TARGETDIR=C:\build\tools'
+RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_CRT.X64.Store\VC_CRT.X64.Store.msi" /qn TARGETDIR=C:\build\tools'
 RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Base\VC_Tools.X64.Base.msi" /qn TARGETDIR=C:\build\tools'
 RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Nat\VC_Tools.X64.Nat.msi" /qn TARGETDIR=C:\build\tools'
-RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\Win81_SDK\Windows Software Development Kit-x86_en-us.msi" /qn TARGETDIR=C:\build\tools'
 RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Nat.Res\enu\VC_Tools.X64.Nat.Res.msi" /qn TARGETDIR=C:\build\tools'
-RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_CRT.Headers\VC_CRT.Headers.msi" /qn TARGETDIR=C:\build\tools'
+RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_Tools.X86.Nat\VC_Tools.X86.Nat.msi" /qn TARGETDIR=C:\build\tools'
+RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualCppBuildTools_Core\VisualCppBuildTools_Core.msi" /qn TARGETDIR=C:\build\tools'
 RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\Win10_UniversalCRTSDK\10240\Universal CRT Headers Libraries and Sources-x86_en-us.msi" /qn TARGETDIR=C:\build\tools'
+RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\Win81_SDK\Windows Software Development Kit-x86_en-us.msi" /qn TARGETDIR=C:\build\tools'
 RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\Win81_SDK\Windows Software Development Kit for Windows Store Apps-x86_en-us.msi" /qn TARGETDIR=C:\build\tools'
-RUN Start-Process msiexec -Wait -ArgumentList '/a "C:\build\layout\packages\VisualC_D14\VC_CRT.X64.Store\VC_CRT.X64.Store.msi" /qn TARGETDIR=C:\build\tools'
 
-RUN Remove-Item -Wait visualcppbuildtools_full.exe
 RUN Remove-Item tools\*.msi
 RUN Remove-Item -Recurse "tools\Microsoft"
 RUN Remove-Item -Recurse "tools\Program Files\Microsoft Visual Studio 14.0\VC\lib\store"
