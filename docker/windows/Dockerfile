@@ -10,7 +10,7 @@ RUN Invoke-WebRequest \
     -OutFile 'visualcppbuildtools_full.exe' \
     -UseBasicParsing
 
-RUN Start-Process .\visualcppbuildtools_full.exe -ArgumentList "/NoRestart /Quiet /Layout C:\build\layout" -Wait
+RUN Start-Process .\visualcppbuildtools_full.exe -ArgumentList '/NoRestart /Quiet /Layout C:\build\layout' -Wait
 
 RUN Start-Process msiexec -ArgumentList "/a `"C:\build\layout\packages\VisualC_D14\VC_Tools.X86.Nat\VC_Tools.X86.Nat.msi`" /qn TARGETDIR=C:\build\tools"
 RUN Start-Process msiexec -ArgumentList "/a `"C:\build\layout\packages\VisualCppBuildTools_Core\VisualCppBuildTools_Core.msi`" /qn TARGETDIR=C:\build\tools"
