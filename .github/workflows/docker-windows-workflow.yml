@@ -1,0 +1,27 @@
+name: Build Docker image (Windows)
+
+on:
+  push:
+    paths:
+    - 'docker/windows/**'
+
+env:
+  IMAGE_NAME: docker.pkg.github.com/${{ github.repository }}/windows:latest
+
+jobs:
+  build:
+    runs-on: windows-2016
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure Docker
+      run: |
+        Set-Content -Path 'C:\ProgramData\Docker\config\daemon.json' -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com"]}'
+        Start-Process powershell -Wait -Verb runAs -ArgumentList '-Command "Restart-Service docker"'
+    - name: Build Docker image
+      shell: bash
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | \
+          docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        docker pull $IMAGE_NAME || true
+        docker build --cache-from $IMAGE_NAME -t $IMAGE_NAME docker/windows
+        docker push $IMAGE_NAME

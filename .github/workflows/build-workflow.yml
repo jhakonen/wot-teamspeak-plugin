@@ -1,7 +1,7 @@
 name: Build the plugin on push or PR
 
 on:
-- push
+#- push
 - pull_request
 
 env:
