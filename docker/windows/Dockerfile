@@ -20,6 +20,8 @@ RUN \
 
 RUN Start-Process .\visualcppbuildtools_full.exe -Wait -ArgumentList '/NoRestart /Quiet /Layout C:\build\layout'
 
+RUN Get-ChildItem C:\build\layout\packages -Filter *.msi -Recurse | % { Write-Host $_.FullName }
+
 RUN Start-Process lessmsi -Wait -NoNewWindow -ArgumentList 'x "C:\build\layout\packages\VisualC_D14\VC_CRT.Headers\VC_CRT.Headers.msi" C:\build\'
 RUN Start-Process lessmsi -Wait -NoNewWindow -ArgumentList 'x "C:\build\layout\packages\VisualC_D14\VC_CRT.X64.Store\VC_CRT.X64.Store.msi" C:\build\'
 RUN Start-Process lessmsi -Wait -NoNewWindow -ArgumentList 'x "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Base\VC_Tools.X64.Base.msi" C:\build\'
