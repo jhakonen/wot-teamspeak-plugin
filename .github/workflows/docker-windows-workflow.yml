@@ -24,4 +24,5 @@ jobs:
           docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
         docker pull $IMAGE_NAME || true
         docker build --cache-from $IMAGE_NAME -t $IMAGE_NAME docker/windows
+        docker history $IMAGE_NAME
         docker push $IMAGE_NAME
