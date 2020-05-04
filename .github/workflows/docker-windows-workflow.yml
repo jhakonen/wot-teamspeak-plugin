@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Configure Docker
       run: |
-        Set-Content -Path 'C:\ProgramData\Docker\config\daemon.json' -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com"]}'
+        Set-Content -Path 'C:\ProgramData\Docker\config\daemon.json' -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com"], "experimental": true}'
         Start-Process powershell -Wait -Verb runAs -ArgumentList '-Command "Restart-Service docker"'
     - name: Build Docker image
       shell: bash
