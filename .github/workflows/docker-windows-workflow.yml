@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'docker/windows/**'
+    - '.github/workflows/docker-windows-workflow.yml'
 
 env:
   IMAGE_NAME: docker.pkg.github.com/${{ github.repository }}/windows:latest
