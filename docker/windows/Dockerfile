@@ -25,7 +25,7 @@ ENV PATH "$env:BUILDTOOLS\Program Files\Microsoft Visual Studio 14.0\VC\bin\amd6
 ENV INCLUDE "$env:BUILDTOOLS\Program Files\Microsoft Visual Studio 14.0\VC\INCLUDE;$env:BUILDTOOLS\Windows Kits\10\include\10.0.10240.0\ucrt;$env:BUILDTOOLS\Windows Kits\8.1\include\shared;$env:BUILDTOOLS\Windows Kits\8.1\Include\um"
 ENV LIB "$env:BUILDTOOLS\Program Files\Microsoft Visual Studio 14.0\VC\LIB\amd64;$env:BUILDTOOLS\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64;$env:BUILDTOOLS\Windows Kits\8.1\lib\winv6.3\um\x64"
 
-COPY --from=buildtools C:\build\SourceDir $env:BUILDTOOLS
+COPY --from=buildtools /build/SourceDir /buildtools
 
 COPY entrypoint.ps1 /entrypoint.ps1
 
