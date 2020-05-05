@@ -22,22 +22,22 @@ jobs:
     - name: Build Docker image
       shell: bash
       run: |
-        echo "Login to Github Package Registry"
+        echo "\nLogin to Github Package Registry"
         echo ${{ secrets.GITHUB_TOKEN }} | \
           docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
 
-        echo "Pull previously build buildtools stage image (missing image is ok)"
+        echo "\nPull previously built buildtools stage image (missing image is ok)"
         docker pull $BUILDTOOLS_NAME || true
 
-        echo "Pull previously build final stage image (missing image is ok)"
+        echo "\nPull previously built final stage image (missing image is ok)"
         docker pull $IMAGE_NAME || true
 
-        echo "Build and push buildtools stage"
+        echo "\nBuild and push new buildtools stage"
         docker build -t $BUILDTOOLS_NAME --cache-from $BUILDTOOLS_NAME --target buildtools docker/windows
         docker history $BUILDTOOLS_NAME
         docker push $BUILDTOOLS_NAME
 
-        echo "Build and push final stage"
-        docker build -t $IMAGE_NAME --cache-from $BUILDTOOLS_NAME,$IMAGE_NAME docker/windows
+        echo "\nBuild and push the final stage"
+        docker build -t $IMAGE_NAME --cache-from $IMAGE_NAME,$BUILDTOOLS_NAME docker/windows
         docker history $IMAGE_NAME
         docker push $IMAGE_NAME
