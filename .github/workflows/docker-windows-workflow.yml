@@ -7,6 +7,7 @@ on:
     - '.github/workflows/docker-windows-workflow.yml'
 
 env:
+  BUILDTOOLS_NAME: docker.pkg.github.com/${{ github.repository }}/windows-buildtools:latest
   IMAGE_NAME: docker.pkg.github.com/${{ github.repository }}/windows:latest
 
 jobs:
@@ -21,8 +22,12 @@ jobs:
     - name: Build Docker image
       shell: bash
       run: |
-        docker build -t $IMAGE_NAME docker/windows
-        docker history $IMAGE_NAME
         echo ${{ secrets.GITHUB_TOKEN }} | \
           docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        docker pull $IMAGE_NAME || true
+        docker pull $BUILDTOOLS_NAME || true
+        docker build -t $BUILDTOOLS_NAME --cache-from $BUILDTOOLS_NAME --target buildtools docker/windows
+        docker build -t $IMAGE_NAME --cache-from $BUILDTOOLS_NAME,$IMAGE_NAME docker/windows
+        docker history $IMAGE_NAME
+        docker push $BUILDTOOLS_NAME
         docker push $IMAGE_NAME
