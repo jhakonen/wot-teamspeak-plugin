@@ -3,4 +3,5 @@ Invoke-WebRequest `
     -OutFile 'qtbase.7z' `
     -UseBasicParsing
 
-Start-Process 'c:\program files\7-zip\7z.exe' -Wait -NoNewWindow -ArgumentList 'x "C:\build\qtbase.7z" -oqt'
+& "C:\program files\7-zip\7z.exe" x "C:\build\qtbase.7z" -oqt > C:\build\out.log
+if (-not $?) { cat C:\build\out.log }
