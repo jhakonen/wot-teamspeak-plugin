@@ -1,11 +1,14 @@
 name: Build the plugin on push or PR
 
 on:
-#- push
-- pull_request
-
-env:
-  QT_VERSION: 5.12.3
+  push:
+    paths-ignore:
+    - 'docker/**'
+    - '.github/workflows/docker-windows-workflow.yml'
+  pull_request:
+    paths-ignore:
+    - 'docker/**'
+    - '.github/workflows/docker-windows-workflow.yml'
 
 jobs:
   build:
@@ -16,19 +19,23 @@ jobs:
           #   runner: ubuntu-latest
           - os: windows
             runner: windows-2016
+            image: docker.pkg.github.com/${{ github.repository }}/windows:latest
 
     runs-on: ${{ matrix.config.runner }}
 
     steps:
     # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
+
     - name: Fetch all tags
       run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
     - name: Get previous git tag
       id: previoustag
       uses: ./.github/actions/github-action-get-previous-tag # WyriHaximus/github-action-get-previous-tag@master
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
     - name: Parse version string 
       id: version
       uses: frabert/replace-string-action@v1.1
@@ -36,53 +43,17 @@ jobs:
         pattern: v([.0-9]+)
         string: ${{ steps.previoustag.outputs.tag }}
         replace-with: $1
-    - name: Resolve Docker tag name
-      shell: bash
-      run: |
-        VERSION=${GITHUB_REF//[^0-9a-zA-Z]/-}
-        VERSION=${VERSION,,}
-        echo "::set-output name=name::docker.pkg.github.com/${{ github.repository }}/${{ matrix.config.os }}:$VERSION"
-      id: docker-tag
-
-    - name: Configure Docker (Windows)
-      run: |
-        Write-Host 'Writing to daemon.json'
-        Set-Content -Path 'C:\ProgramData\Docker\config\daemon.json' -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com"]}'
-        Write-Host 'Restarting Docker daemon'
-        Start-Process powershell -Wait -Verb runAs -ArgumentList '-Command "Restart-Service docker"'
-        Write-Host 'All done'
-        #dockerd -D
-      if: ${{ matrix.config.os == 'windows' }}
-
-    - name: Build Docker image
-      shell: bash
-      run: |
-        echo ${{ secrets.GITHUB_TOKEN }} | \
-          docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
-        docker pull ${{ steps.docker-tag.outputs.name }} || true
-        docker build \
-          --cache-from ${{ steps.docker-tag.outputs.name }} \
-          -t ${{ steps.docker-tag.outputs.name }} \
-          docker/${{ matrix.config.os }}
-
-        #if [ "${{ matrix.config.os }}" == "windows" ]; then
-        #  echo '{"allow-nondistributable-artifacts": ["docker.pkg.github.com/jhakonen/actions-test/windows"]}' > /C/ProgramData/Docker/config/daemon.json
-        #  cat /C/ProgramData/Docker/config/daemon.json
-        #  # docker-machine restart
-        #  powershell -command 'Stop-Service docker'
-        #  # powershell -command 'Start-Service docker'
-        #  # python -c "import json; f=open('/C/ProgramData/Docker/config/daemon.json'); d=json.load(f); print(d)"
-        #fi
-        
-        docker push --disable-content-trust ${{ steps.docker-tag.outputs.name }}
 
     - name: Build plugin package
       id: package
       run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | \
+          docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        docker pull ${{ matrix.config.image }} || true
         docker run \
           --rm \
           --volume ${PWD}:/build \
-          ${{ steps.docker-tag.outputs.name }} \
+          ${{ matrix.config.image }} \
           ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
@@ -91,6 +62,7 @@ jobs:
       with:
         name: ${{ matrix.config.os }}-plugin
         path: ${{ steps.package.outputs.plugin-artifact }}
+
     - name: Upload debugging symbols
       uses: actions/upload-artifact@v1
       with:
