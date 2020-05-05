@@ -22,11 +22,11 @@ jobs:
     - name: Build Docker image
       shell: bash
       run: |
-        echo "\nLogin to Github Package Registry"
+        echo "Login to Github Package Registry"
         echo ${{ secrets.GITHUB_TOKEN }} | \
           docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
 
-        echo "\nBuild and push the final stage"
+        echo "Build and push the final stage"
         docker build -t $IMAGE_NAME docker/windows
         docker history $IMAGE_NAME
         docker push $IMAGE_NAME

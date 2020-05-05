@@ -3,7 +3,7 @@ Invoke-WebRequest `
     -OutFile 'visualcppbuildtools_full.exe' `
     -UseBasicParsing
 
-& visualcppbuildtools_full.exe /NoRestart /Quiet /Layout C:\build\layout
+& .\visualcppbuildtools_full.exe /NoRestart /Quiet /Layout C:\build\layout
 
 & lessmsi x "C:\build\layout\packages\VisualC_D14\VC_CRT.Headers\VC_CRT.Headers.msi" C:\build\ > C:\build\out.log
 if (-not $?) { cat C:\build\out.log }
