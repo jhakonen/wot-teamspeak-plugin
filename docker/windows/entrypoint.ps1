@@ -1,4 +1,4 @@
 dir env:
 
-& qmake "PLUGIN_VERSION = $1"
-& nmake package
+Exec-NativeProgram { qmake "PLUGIN_VERSION = $1" }
+Exec-NativeProgram { nmake package }

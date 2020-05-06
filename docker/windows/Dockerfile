@@ -10,8 +10,9 @@ RUN \
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-RUN & choco install -y lessmsi 7zip python2 > C:\build\out.log; \
-    if (-not $?) { cat C:\build\out.log }
+COPY builder-utils.psm1 '/Program Files/WindowsPowerShell/Modules/builder-utils.psm1'
+
+RUN Exec-NativeProgram { choco install -y lessmsi 7zip python2 }
 
 COPY install-buildtools.ps1 /install-buildtools.ps1
 RUN & C:\install-buildtools.ps1
