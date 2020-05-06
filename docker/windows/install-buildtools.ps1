@@ -3,7 +3,7 @@ Invoke-WebRequest `
     -OutFile 'visualcppbuildtools_full.exe' `
     -UseBasicParsing
 
-Invoke-NativeProgram { .\visualcppbuildtools_full.exe /NoRestart /Quiet /Layout C:\build\layout ; Write-Host "-->$LASTEXITCODE<--" }
+Invoke-NativeProgram { cmd /c start /wait visualcppbuildtools_full.exe /NoRestart /Quiet /Layout C:\build\layout }
 
 Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_CRT.Headers\VC_CRT.Headers.msi" C:\build\ }
 Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_CRT.X64.Store\VC_CRT.X64.Store.msi" C:\build\ }
