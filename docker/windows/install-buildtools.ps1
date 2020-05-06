@@ -3,18 +3,18 @@ Invoke-WebRequest `
     -OutFile 'visualcppbuildtools_full.exe' `
     -UseBasicParsing
 
-Exec-NativeProgram { .\visualcppbuildtools_full.exe /NoRestart /Quiet /Layout C:\build\layout }
+Invoke-NativeProgram { .\visualcppbuildtools_full.exe /NoRestart /Quiet /Layout C:\build\layout }
 
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_CRT.Headers\VC_CRT.Headers.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_CRT.X64.Store\VC_CRT.X64.Store.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Base\VC_Tools.X64.Base.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Nat\VC_Tools.X64.Nat.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Nat.Res\enu\VC_Tools.X64.Nat.Res.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X86.Nat\VC_Tools.X86.Nat.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\VisualCppBuildTools_Core\VisualCppBuildTools_Core.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\Win10_UniversalCRTSDK\10240\Universal CRT Headers Libraries and Sources-x86_en-us.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\Win81_SDK\Windows Software Development Kit-x86_en-us.msi" C:\build\ }
-Exec-NativeProgram { lessmsi x "C:\build\layout\packages\Win81_SDK\Windows Software Development Kit for Windows Store Apps-x86_en-us.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_CRT.Headers\VC_CRT.Headers.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_CRT.X64.Store\VC_CRT.X64.Store.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Base\VC_Tools.X64.Base.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Nat\VC_Tools.X64.Nat.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X64.Nat.Res\enu\VC_Tools.X64.Nat.Res.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualC_D14\VC_Tools.X86.Nat\VC_Tools.X86.Nat.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\VisualCppBuildTools_Core\VisualCppBuildTools_Core.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\Win10_UniversalCRTSDK\10240\Universal CRT Headers Libraries and Sources-x86_en-us.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\Win81_SDK\Windows Software Development Kit-x86_en-us.msi" C:\build\ }
+Invoke-NativeProgram { lessmsi x "C:\build\layout\packages\Win81_SDK\Windows Software Development Kit for Windows Store Apps-x86_en-us.msi" C:\build\ }
 
 Remove-Item -Recurse "C:\build\SourceDir\Microsoft"
 Remove-Item -Recurse "C:\build\SourceDir\Program Files\Microsoft Visual Studio 14.0\VC\lib\store"

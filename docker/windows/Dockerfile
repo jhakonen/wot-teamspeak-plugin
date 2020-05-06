@@ -12,7 +12,7 @@ RUN \
 
 COPY ["BuilderUtils.psm1", "C:/Program Files/WindowsPowerShell/Modules/BuilderUtils/BuilderUtils.psm1"]
 
-RUN Exec-NativeProgram { choco install -y lessmsi 7zip python2 }
+RUN Invoke-NativeProgram { choco install -y lessmsi 7zip python2 }
 
 COPY ["install-buildtools.ps1", "C:/install-buildtools.ps1"]
 RUN & C:\install-buildtools.ps1

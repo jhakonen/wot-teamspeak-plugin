@@ -3,4 +3,4 @@ Invoke-WebRequest `
     -OutFile 'qtbase.7z' `
     -UseBasicParsing
 
-Exec-NativeProgram { & "C:\program files\7-zip\7z.exe" x "C:\build\qtbase.7z" }
+Invoke-NativeProgram { & "C:\program files\7-zip\7z.exe" x "C:\build\qtbase.7z" }
