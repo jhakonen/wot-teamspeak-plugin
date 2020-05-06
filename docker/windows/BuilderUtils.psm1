@@ -3,12 +3,13 @@ function Invoke-NativeProgram {
         [ScriptBlock] $ScriptBlock
     )
     Write-Host $ScriptBlock
+    $global:LASTEXITCODE = "not-set"
     & $ScriptBlock 2>&1 >$env:TEMP\out.log
-    if ($LASTEXITCODE -eq "") {
+    if ($global:LASTEXITCODE -eq "not-set") {
         throw "Exit code not set, maybe because the native program is GUI application?"
     }
-    if ($LASTEXITCODE -ne "0") {
+    if (($global:LASTEXITCODE -is [Int32]) -and ($global:LASTEXITCODE -ne 0)) {
         Get-Content $env:TEMP\out.log
-        throw "Execution failed with exit code: $LASTEXITCODE"
+        throw "Execution failed with exit code: $global:LASTEXITCODE"
     }
 }
