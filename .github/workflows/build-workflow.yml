@@ -1,4 +1,4 @@
-name: Build the plugin on push or PR
+name: Build the plugin
 
 on:
   push:
@@ -10,16 +10,18 @@ on:
     - 'docker/**'
     - '.github/workflows/docker-images-workflow.yml'
 
+env:
+  IMAGE_PREFIX: jhakonen/tessumod:plugin
+
 jobs:
   build:
     strategy:
       matrix:
         config:
-          # - os: ubuntu
-          #   runner: ubuntu-latest
+          - os: ubuntu
+            runner: ubuntu-latest
           - os: windows
             runner: windows-2016
-            image: docker.pkg.github.com/${{ github.repository }}/windows:latest
 
     runs-on: ${{ matrix.config.runner }}
 
@@ -46,14 +48,16 @@ jobs:
 
     - name: Build plugin package
       id: package
+      shell: bash
       run: |
-        echo ${{ secrets.GITHUB_TOKEN }} | \
-          docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
-        docker pull ${{ matrix.config.image }} || true
+        IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+
+        echo "Pull and build using docker image: $IMAGE_NAME"
+        docker pull $IMAGE_NAME
         docker run \
           --rm \
           --volume ${PWD}:/build \
-          ${{ matrix.config.image }} \
+          $IMAGE_NAME \
           ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
