@@ -21,8 +21,7 @@ jobs:
       shell: bash
       run: |
         echo "Login to Docker Hub"
-        echo $DOCKER_PASSWORD | \
-          docker login docker.pkg.github.com -u $DOCKER_USERNAME --password-stdin
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
         echo "Build and push the final stage"
         docker build -t $IMAGE_NAME docker/windows
