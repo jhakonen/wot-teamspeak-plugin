@@ -29,12 +29,12 @@ jobs:
     - name: Build Docker image
       shell: bash
       run: |
-        DOCKER_IMAGE=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+        IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
 
         echo "Login to Docker Hub"
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
-        echo "Build and push docker image: $DOCKER_IMAGE"
+        echo "Build and push docker image: $IMAGE_NAME"
         docker build -t $IMAGE_NAME docker/${{ matrix.config.os }}
         docker history $IMAGE_NAME
         docker push $IMAGE_NAME
