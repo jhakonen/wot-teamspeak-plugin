@@ -38,6 +38,7 @@ COPY --from=builder ["C:/build/SourceDir", "C:/buildtools"]
 COPY --from=builder ["C:/build/qt", "C:/qt"]
 COPY --from=builder ["C:/python27", "C:/python27"]
 
-COPY ["entrypoint.ps1" "C:/entrypoint.ps1"]
+COPY ["BuilderUtils.psm1", "C:/Program Files/WindowsPowerShell/Modules/BuilderUtils/BuilderUtils.psm1"]
+COPY ["entrypoint.ps1", "C:/entrypoint.ps1"]
 
 ENTRYPOINT ["C:/entrypoint.ps1"]
