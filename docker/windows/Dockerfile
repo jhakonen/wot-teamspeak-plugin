@@ -41,4 +41,6 @@ COPY --from=builder ["C:/python27", "C:/python27"]
 COPY ["BuilderUtils.psm1", "C:/Program Files/WindowsPowerShell/Modules/BuilderUtils/BuilderUtils.psm1"]
 COPY ["entrypoint.ps1", "C:/entrypoint.ps1"]
 
+VOLUME ["C:/build"]
+
 ENTRYPOINT ["C:/entrypoint.ps1"]
