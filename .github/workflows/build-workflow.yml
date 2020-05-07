@@ -4,11 +4,11 @@ on:
   push:
     paths-ignore:
     - 'docker/**'
-    - '.github/workflows/docker-windows-workflow.yml'
+    - '.github/workflows/docker-images-workflow.yml'
   pull_request:
     paths-ignore:
     - 'docker/**'
-    - '.github/workflows/docker-windows-workflow.yml'
+    - '.github/workflows/docker-images-workflow.yml'
 
 jobs:
   build:

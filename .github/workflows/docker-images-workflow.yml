@@ -1,0 +1,40 @@
+name: Build Docker images
+
+on:
+  push:
+    paths:
+    - 'docker/**'
+    - '.github/workflows/docker-images-workflow.yml'
+
+env:
+  IMAGE_PREFIX: jhakonen/tessumod:plugin
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build:
+    name: Build docker image for building Tessumod plugin
+    strategy:
+      matrix:
+        config:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: windows
+            runner: windows-2016
+
+    runs-on: ${{ matrix.config.runner }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Docker image
+      shell: bash
+      run: |
+        DOCKER_IMAGE=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+
+        echo "Login to Docker Hub"
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+        echo "Build and push docker image: $DOCKER_IMAGE"
+        docker build -t $IMAGE_NAME docker/${{ matrix.config.os }}
+        docker history $IMAGE_NAME
+        docker push $IMAGE_NAME
