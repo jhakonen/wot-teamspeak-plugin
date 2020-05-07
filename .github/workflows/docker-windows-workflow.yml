@@ -7,7 +7,9 @@ on:
     - '.github/workflows/docker-windows-workflow.yml'
 
 env:
-  IMAGE_NAME: docker.pkg.github.com/${{ github.repository }}/windows:latest
+  IMAGE_NAME: jhakonen/tessumod:plugin-windows-latest
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
   build:
@@ -15,16 +17,12 @@ jobs:
     runs-on: windows-2016
     steps:
     - uses: actions/checkout@v2
-    - name: Configure Docker
-      run: |
-        Set-Content -Path 'C:\ProgramData\Docker\config\daemon.json' -Value '{"allow-nondistributable-artifacts": ["docker.pkg.github.com"]}'
-        Start-Process powershell -Wait -Verb runAs -ArgumentList '-Command "Restart-Service docker"'
     - name: Build Docker image
       shell: bash
       run: |
-        echo "Login to Github Package Registry"
-        echo ${{ secrets.GITHUB_TOKEN }} | \
-          docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        echo "Login to Docker Hub"
+        echo $DOCKER_PASSWORD | \
+          docker login docker.pkg.github.com -u $DOCKER_USERNAME --password-stdin
 
         echo "Build and push the final stage"
         docker build -t $IMAGE_NAME docker/windows
