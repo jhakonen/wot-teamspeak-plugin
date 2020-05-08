@@ -57,7 +57,7 @@ jobs:
         echo "Build plugin version $PLUGIN_VERSION ($MOUNT_POINT)"
         docker run --rm --volume $MOUNT_POINT $IMAGE_NAME $PLUGIN_VERSION
       env:
-        IMAGE_NAME: ${{ env.IMAGE_PREFIX }-${{ matrix.config.os }}-latest
+        IMAGE_NAME: ${{ env.IMAGE_PREFIX }}-${{ matrix.config.os }}-latest
         MOUNT_POINT: ${{ github.workspace }}:${{ matrix.config.mount }}
         PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
 
