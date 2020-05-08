@@ -61,7 +61,6 @@ jobs:
         MOUNT_POINT: ${{ github.workspace }}:${{ matrix.config.mount }}
         PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
 
-
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
       uses: actions/upload-artifact@v1
