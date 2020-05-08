@@ -23,18 +23,24 @@ jobs:
             runner: windows-2016
 
     runs-on: ${{ matrix.config.runner }}
+    env:
+      IMAGE_NAME: ${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build Docker image
+
+    - name: Build docker image
       shell: bash
       run: |
-        IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+        echo "Build docker image: $IMAGE_NAME"
+        docker build -t $IMAGE_NAME docker/${{ matrix.config.os }}
+        docker history $IMAGE_NAME
 
+    - name: Push docker image
+      shell: bash
+      run: |
         echo "Login to Docker Hub"
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
-        echo "Build and push docker image: $IMAGE_NAME"
-        docker build -t $IMAGE_NAME docker/${{ matrix.config.os }}
-        docker history $IMAGE_NAME
+        echo "Push docker image: $IMAGE_NAME"
         docker push $IMAGE_NAME

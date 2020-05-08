@@ -24,7 +24,7 @@ $env:LIB = @(
     "$BUILDTOOLS_DIR\Program Files\Microsoft Visual Studio 14.0\VC\LIB\amd64",
     "$BUILDTOOLS_DIR\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64",
     "$BUILDTOOLS_DIR\Windows Kits\8.1\lib\winv6.3\um\x64"
-)
+) -Join ';'
 
 Get-ChildItem env: | Format-List
 
