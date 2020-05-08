@@ -52,15 +52,15 @@ jobs:
       id: package
       shell: bash
       run: |
-        IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
-
-        echo "Pull and build using docker image: $IMAGE_NAME"
+        echo "Pull docker image: $IMAGE_NAME"
         docker pull $IMAGE_NAME
-        docker run \
-          --rm \
-          --volume ${PWD}:${{ matrix.config.mount }} \
-          $IMAGE_NAME \
-          ${{ steps.version.outputs.replaced }}
+        echo "Build plugin version $PLUGIN_VERSION ($MOUNT_POINT)"
+        docker run --rm --volume $MOUNT_POINT $IMAGE_NAME $PLUGIN_VERSION
+      env:
+        IMAGE_NAME: ${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+        MOUNT_POINT: ${{ github.workspace }}:${{ matrix.config.mount }}
+        PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
+
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
