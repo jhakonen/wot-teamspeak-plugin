@@ -49,7 +49,6 @@ jobs:
         replace-with: $1
 
     - name: Pull docker image from Docker Hub
-      id: package
       shell: bash
       run: |
         IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
