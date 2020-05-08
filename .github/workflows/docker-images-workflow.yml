@@ -24,7 +24,7 @@ jobs:
 
     runs-on: ${{ matrix.config.runner }}
     env:
-      IMAGE_NAME: ${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+      IMAGE_NAME: ${{ env.IMAGE_PREFIX }}-${{ matrix.config.os }}-latest
 
     steps:
     - uses: actions/checkout@v2
