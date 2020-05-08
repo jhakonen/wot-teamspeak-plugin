@@ -27,14 +27,14 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 WORKDIR /build
 
 RUN \
-    SETX BUILDTOOLS_DIR "C:\buildtools" /M; \
-    SETX PYTHON_DIR "C:\Python27" /M; \
-    SETX QT_DIR "C:\qt\5.12.3\msvc2015_64" /M;
+    SETX BUILDTOOLS_DIR "C:\\buildtools" /M; \
+    SETX PYTHON_DIR "C:\\Python27" /M; \
+    SETX QT_DIR "C:\\qt\\5.12.3\\msvc2015_64" /M;
 
 RUN \
-    SETX PATH "$env:PYTHON_DIR;$env:QT_DIR\bin;$env:BUILDTOOLS_DIR\Program Files\Microsoft Visual Studio 14.0\VC\bin\amd64;$env:BUILDTOOLS_DIR\Windows Kits\8.1\bin\x64;$env:PATH" /M; \
-    SETX INCLUDE "$env:BUILDTOOLS_DIR\Program Files\Microsoft Visual Studio 14.0\VC\INCLUDE;$env:BUILDTOOLS_DIR\Windows Kits\10\include\10.0.10240.0\ucrt;$env:BUILDTOOLS_DIR\Windows Kits\8.1\include\shared;$env:BUILDTOOLS_DIR\Windows Kits\8.1\Include\um" /M; \
-    SETX LIB "$env:BUILDTOOLS_DIR\Program Files\Microsoft Visual Studio 14.0\VC\LIB\amd64;$env:BUILDTOOLS_DIR\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64;$env:BUILDTOOLS_DIR\Windows Kits\8.1\lib\winv6.3\um\x64" /M;
+    SETX PATH "$env:PYTHON_DIR;$env:QT_DIR\\bin;$env:BUILDTOOLS_DIR\\Program Files\\Microsoft Visual Studio 14.0\\VC\\bin\\amd64;$env:BUILDTOOLS_DIR\\Windows Kits\\8.1\\bin\\x64;$env:PATH" /M; \
+    SETX INCLUDE "$env:BUILDTOOLS_DIR\\Program Files\\Microsoft Visual Studio 14.0\\VC\\INCLUDE;$env:BUILDTOOLS_DIR\\Windows Kits\\10\\include\\10.0.10240.0\\ucrt;$env:BUILDTOOLS_DIR\\Windows Kits\\8.1\\include\\shared;$env:BUILDTOOLS_DIR\\Windows Kits\\8.1\\Include\\um" /M; \
+    SETX LIB "$env:BUILDTOOLS_DIR\\Program Files\\Microsoft Visual Studio 14.0\\VC\\LIB\\amd64;$env:BUILDTOOLS_DIR\\Windows Kits\\10\\Lib\\10.0.10240.0\\ucrt\\x64;$env:BUILDTOOLS_DIR\\Windows Kits\\8.1\\lib\\winv6.3\\um\\x64" /M;
 
 COPY --from=builder ["C:/build/SourceDir", "C:/buildtools"]
 COPY --from=builder ["C:/build/qt", "C:/qt"]
