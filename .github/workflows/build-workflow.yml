@@ -48,16 +48,24 @@ jobs:
         string: ${{ steps.previoustag.outputs.tag }}
         replace-with: $1
 
+    - name: Pull docker image from Docker Hub
+      id: package
+      shell: bash
+      run: |
+        IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+
+        echo "Pull docker image: $IMAGE_NAME"
+        docker pull $IMAGE_NAME
+
     - name: Build plugin package
       id: package
       shell: bash
       run: |
-        echo "Pull docker image: $IMAGE_NAME"
-        docker pull $IMAGE_NAME
-        echo "Build plugin version $PLUGIN_VERSION ($MOUNT_POINT)"
+        IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
+
+        echo "Build plugin version $PLUGIN_VERSION"
         docker run --rm --volume $MOUNT_POINT $IMAGE_NAME $PLUGIN_VERSION
       env:
-        IMAGE_NAME: ${{ env.IMAGE_PREFIX }}-${{ matrix.config.os }}-latest
         MOUNT_POINT: ${{ github.workspace }}:${{ matrix.config.mount }}
         PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
 
