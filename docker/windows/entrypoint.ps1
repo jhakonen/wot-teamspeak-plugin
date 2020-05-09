@@ -28,5 +28,5 @@ $env:LIB = @(
 
 Get-ChildItem env: | Format-List
 
-Invoke-NativeProgram { qmake "PLUGIN_VERSION = $1" }
+Invoke-NativeProgram { qmake -d "PLUGIN_VERSION = $1" }
 Invoke-NativeProgram { nmake package }
