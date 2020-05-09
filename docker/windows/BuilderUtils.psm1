@@ -5,7 +5,7 @@ function Invoke-NativeProgram {
     Write-Host $ScriptBlock
     $global:LASTEXITCODE = "not-set"
     $ErrorActionPreference = 'Continue'
-    & $ScriptBlock.GetNewClosure() 2>&1 >$env:TEMP\out.log
+    & $ScriptBlock.GetNewClosure() 2>&1 | % { $_.ToString() } >$env:TEMP\out.log
     if ($global:LASTEXITCODE -eq "not-set") {
         throw "Exit code not set, maybe because the native program is GUI application?"
     }

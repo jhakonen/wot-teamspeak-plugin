@@ -4,3 +4,17 @@ Invoke-WebRequest `
     -UseBasicParsing
 
 Invoke-NativeProgram { & "C:\program files\7-zip\7z.exe" x "C:\build\qtbase.7z" -oC:\build\Qt -r }
+
+$QCONFIG_PRI = "C:\build\qt\5.12.3\msvc2015_64\mkspecs\qconfig.pri"
+$QT_CONF = "C:\build\qt\5.12.3\msvc2015_64\bin\qt.conf"
+$QT_CONF_CONTENTS = @'
+[Paths]
+Documentation=../../Docs/Qt-5.12.3
+Examples=../../Examples/Qt-5.12.3
+Prefix=..
+'@
+
+$PSDefaultParameterValues['Out-File:Encoding'] = 'ASCII'
+(Get-Content -path $QCONFIG_PRI -Raw) -replace 'QT_EDITION = Enterprise','QT_EDITION = OpenSource' | Set-Content -Path $QCONFIG_PRI
+(Get-Content -path $QCONFIG_PRI -Raw) -replace 'QT_LICHECK = licheck.exe','QT_LICHECK =' | Set-Content -Path $QCONFIG_PRI
+$QT_CONF_CONTENTS -f 'string' | Out-File $QT_CONF
