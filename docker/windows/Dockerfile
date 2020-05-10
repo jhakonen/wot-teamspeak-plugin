@@ -24,7 +24,16 @@ RUN & C:\install-qt.ps1
 
 FROM mcr.microsoft.com/windows/servercore:ltsc2016
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-WORKDIR /build
+
+# Fix for servercore:ltsc2016 (should not be an issue in servercore:ltsc2019),
+# without this QMake will fail with error:
+#   ASSERT: "fileName.isEmpty() || isAbsolutePath(fileName)"
+# Solution based on:
+#   - https://github.com/nodejs/node/issues/8897#issuecomment-298662512
+#   - https://github.com/nodejs/node/issues/8897#issuecomment-319010735
+RUN mkdir C:/build
+RUN Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\DOS Devices' -Name 'Z:' -Value '\??\C:\build' -Type String
+WORKDIR 'Z:\\'
 
 COPY --from=builder ["C:/build/SourceDir", "C:/buildtools"]
 COPY --from=builder ["C:/build/qt", "C:/qt"]
