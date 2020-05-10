@@ -30,5 +30,9 @@ Get-ChildItem env: | Format-List
 
 qmake -query
 
+Write-Host "START"
+cl -nologo -E  C:/qt/5.12.3/msvc2015_64/mkspecs/features/data/macros.cpp
+Write-Host "Result: $LASTEXITCODE"
+
 Invoke-NativeProgram { qmake -d "PLUGIN_VERSION = $1" }
 Invoke-NativeProgram { nmake package }
