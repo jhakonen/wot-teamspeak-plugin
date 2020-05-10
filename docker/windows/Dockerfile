@@ -35,6 +35,7 @@ RUN mkdir C:/build
 RUN Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\DOS Devices' -Name 'Z:' -Value '\??\C:\build' -Type String
 WORKDIR 'Z:\\'
 
+COPY --from=builder ["C:/build/layout/packages/vcRedistD14/VC_redist.x64.exe", "C:/VC_redist.x64.exe"]
 COPY --from=builder ["C:/build/SourceDir", "C:/buildtools"]
 COPY --from=builder ["C:/build/qt", "C:/qt"]
 COPY --from=builder ["C:/python27", "C:/python27"]
@@ -42,5 +43,8 @@ COPY --from=builder ["C:/python27", "C:/python27"]
 COPY ["BuilderUtils.psm1", "C:/Program Files/WindowsPowerShell/Modules/BuilderUtils/BuilderUtils.psm1"]
 COPY ["entrypoint.ps1", "C:/entrypoint.ps1"]
 COPY ["qmake.exe", "C:/qt/5.12.3/msvc2015_64/bin/qmake.exe"]
+
+# Required at least by cl.exe
+RUN Invoke-NativeProgram { & 'C:\\VC_redist.x64.exe' /install /passive /norestart }
 
 ENTRYPOINT ["powershell.exe", "C:\\entrypoint.ps1"]
