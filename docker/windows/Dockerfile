@@ -45,6 +45,6 @@ COPY ["entrypoint.ps1", "C:/entrypoint.ps1"]
 COPY ["qmake.exe", "C:/qt/5.12.3/msvc2015_64/bin/qmake.exe"]
 
 # Required at least by cl.exe
-RUN Invoke-NativeProgram { & 'C:\\VC_redist.x64.exe' /install /passive /norestart }
+RUN Invoke-NativeProgram { cmd /c start /wait 'C:/VC_redist.x64.exe' /install /passive /norestart }
 
 ENTRYPOINT ["powershell.exe", "C:\\entrypoint.ps1"]
