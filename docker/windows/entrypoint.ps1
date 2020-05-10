@@ -28,5 +28,5 @@ $env:LIB = @(
 
 Get-ChildItem env: | Format-List
 
-qmake "PLUGIN_VERSION = $1"
+qmake "PLUGIN_VERSION = $($args[0])"
 nmake package
