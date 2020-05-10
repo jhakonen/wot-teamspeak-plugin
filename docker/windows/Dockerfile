@@ -40,7 +40,6 @@ COPY --from=builder ["C:/build/qt", "C:/qt"]
 
 COPY ["BuilderUtils.psm1", "C:/Program Files/WindowsPowerShell/Modules/BuilderUtils/BuilderUtils.psm1"]
 COPY ["entrypoint.ps1", "C:/entrypoint.ps1"]
-COPY ["qmake.exe", "C:/qt/5.12.3/msvc2015_64/bin/qmake.exe"]
 
 RUN \
     Set-ExecutionPolicy Bypass -Scope Process -Force; \
