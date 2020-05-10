@@ -28,6 +28,7 @@ jobs:
     runs-on: ${{ matrix.config.runner }}
 
     steps:
+
     # Checkout sources and get plugin version string from latest tag
     - uses: actions/checkout@v2
 
