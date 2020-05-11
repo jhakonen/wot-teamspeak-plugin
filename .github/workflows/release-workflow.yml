@@ -51,7 +51,7 @@ jobs:
         echo "Build plugin version ${{ steps.version.outputs.replaced }}"
         docker run \
           --rm \
-          --volume ${{ github.workspace }}:${{ matrix.config.mount }} \
+          --volume '${{ github.workspace }}:${{ matrix.config.mount }}' \
           $IMAGE_NAME \
           ${{ steps.version.outputs.replaced }}
 
