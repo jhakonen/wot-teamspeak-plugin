@@ -19,7 +19,9 @@
 PLUGIN_NAME        = "TessuMod Plugin"
 PLUGIN_DESCRIPTION = "This plugin provides support for 3D audio, with help of TessuMod, it positions users voice in TeamSpeak so that their voices appear to come from their vehicle's direction on battlefield."
 PLUGIN_AUTHOR      = "Janne Hakonen (jhakonen @ WOT EU server)"
-PLUGIN_VERSION     = "0.8.0"
+
+# Plugin version is usually provided from Github Actions workflow
+!defined(PLUGIN_VERSION, var):PLUGIN_VERSION = "development"
 
 TARGET = tessumod_plugin
 TEMPLATE = lib
@@ -50,6 +52,7 @@ win32 {
 	}
 }
 
+
 # Compile release library with debugging symbols
 QMAKE_CFLAGS_RELEASE += $$QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO
 QMAKE_CXXFLAGS_RELEASE += $$QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO
@@ -66,9 +69,11 @@ win32 {
 	LIBRARY_EXTENSION = so
 }
 
-
 TARGET_FILE_PATH = "$${DESTDIR}/$${TARGET}.$${LIBRARY_EXTENSION}"
 DEBUG_FILE_PATH = "$${DESTDIR}/$${TARGET}.$${DEBUG_SYMBOLS_EXTENSION}"
+
+PLUGIN_ARTIFACT="$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}.ts3_plugin"
+DBGSYMBOLS_ARTIFACT="$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}_dbg.zip"
 
 # Strip debug symbols and save them to a separate file. Only required in Linux
 # as MSVC in Windows can create the separate file by itself.
@@ -84,13 +89,13 @@ win32:BUILD_TARGET = release
 
 # Target for creating a compressed archive with the debugging symbol file
 # included, usefull for debugging crashes
-debugsymbols.target = "$${OUT_PWD}/$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}_dbg.zip"
+debugsymbols.target = "$${OUT_PWD}/$${DBGSYMBOLS_ARTIFACT}"
 debugsymbols.depends = $$BUILD_TARGET
 debugsymbols.commands = python $$PWD/bin/make-dbg-archive.py "$${debugsymbols.target}" "$${DEBUG_FILE_PATH}"
 
 # Target for creating .ts3_plugin installer file, allows easy install of the
 # plugin by the end user. This should be the one that is uploaded to myteamspeak.com
-ts3_plugin.target = "$${OUT_PWD}/$${TARGET}_$${PLUGIN_VERSION}_$${PLUGIN_PLATFORM}.ts3_plugin"
+ts3_plugin.target = "$${OUT_PWD}/$${PLUGIN_ARTIFACT}"
 ts3_plugin.depends = $$BUILD_TARGET
 ts3_plugin.commands = python $$PWD/bin/make-installer.py \
 	"$${ts3_plugin.target}" \
@@ -101,6 +106,10 @@ ts3_plugin.commands = python $$PWD/bin/make-installer.py \
 	"$$PWD/etc/alsoft.ini" \
 	"$$PWD/etc/hrtfs/*.mhr"
 win32:ts3_plugin.commands += "$$PWD/bin/OpenAL64.dll"
+
+# Tell Github Actions workflow the locations of our build artifacts
+system(echo "::set-output name=plugin-artifact::$${PLUGIN_ARTIFACT}")
+system(echo "::set-output name=debugsymbols-artifact::$${DBGSYMBOLS_ARTIFACT}")
 
 # Umbrella target for creating both installer and associated debugging symbols
 package.target = package

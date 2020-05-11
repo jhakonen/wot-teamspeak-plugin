@@ -39,6 +39,7 @@
 #include <QMutex>
 
 #include <iostream>
+#include <cmath>
 
 namespace
 {
