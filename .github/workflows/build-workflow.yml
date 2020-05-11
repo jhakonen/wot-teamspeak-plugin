@@ -41,7 +41,7 @@ jobs:
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Parse version string 
+    - name: Parse version string
       id: version
       uses: frabert/replace-string-action@v1.1
       with:
@@ -53,7 +53,6 @@ jobs:
       shell: bash
       run: |
         IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
-
         echo "Pull docker image: $IMAGE_NAME"
         docker pull $IMAGE_NAME
 
@@ -62,12 +61,12 @@ jobs:
       shell: bash
       run: |
         IMAGE_NAME=${IMAGE_PREFIX}-${{ matrix.config.os }}-latest
-
-        echo "Build plugin version $PLUGIN_VERSION"
-        docker run --rm --volume $MOUNT_POINT $IMAGE_NAME $PLUGIN_VERSION
-      env:
-        MOUNT_POINT: ${{ github.workspace }}:${{ matrix.config.mount }}
-        PLUGIN_VERSION: ${{ steps.version.outputs.replaced }}
+        echo "Build plugin version ${{ steps.version.outputs.replaced }}"
+        docker run \
+          --rm \
+          --volume ${{ github.workspace }}:${{ matrix.config.mount }} \
+          $IMAGE_NAME \
+          ${{ steps.version.outputs.replaced }}
 
     # Upload plugin files for releasing
     - name: Upload plugin installer artifact
