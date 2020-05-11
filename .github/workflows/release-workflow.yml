@@ -69,16 +69,18 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      asset_path: ${{ steps.package.outputs.plugin-artifact }}
-      asset_name: ${{ steps.package.outputs.plugin-artifact }}
-      asset_content_type: application/zip
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.package.outputs.plugin-artifact }}
+        asset_name: ${{ steps.package.outputs.plugin-artifact }}
+        asset_content_type: application/zip
 
     - name: Upload plugin debug symbols asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      asset_path: ${{ steps.package.outputs.debugsymbols-artifact }}
-      asset_name: ${{ steps.package.outputs.debugsymbols-artifact }}
-      asset_content_type: application/zip
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.package.outputs.debugsymbols-artifact }}
+        asset_name: ${{ steps.package.outputs.debugsymbols-artifact }}
+        asset_content_type: application/zip

@@ -2,6 +2,9 @@ name: Build Docker images
 
 on:
   push:
+    # Do not run on release creation
+    tags-ignore:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
     paths:
     - 'docker/**'
     - '.github/workflows/docker-images-workflow.yml'
