@@ -2,6 +2,7 @@ name: Build the plugin
 
 on:
   push:
+    branches: ['**']
     # Do not run on release creation
     tags-ignore:
       - 'v[0-9]+.[0-9]+.[0-9]+'
