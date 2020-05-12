@@ -717,7 +717,7 @@ float TeamSpeakPlugin::getTSPlaybackVolume() const
 
 QList<anyID> TeamSpeakPlugin::getMyChannelClients() const
 {
-	anyID* clients;
+	anyID* clients = NULL;
 	QList<anyID> results;
 	uint64 channelId = getMyChannelID();
 	if( channelId == (uint64)-1 )
@@ -725,14 +725,17 @@ QList<anyID> TeamSpeakPlugin::getMyChannelClients() const
 		return results;
 	}
 	gTs3Functions.getChannelClientList( gTs3Functions.getCurrentServerConnectionHandlerID(), getMyChannelID(), &clients );
-	for( int i = 0; clients[i] != (anyID)NULL; i++ )
+	if( clients )
 	{
-		if( clients[i] != getMyUserId() )
+		for( int i = 0; clients[i] != (anyID)NULL; i++ ) // <-- FIX
 		{
-			results.append( clients[i] );
+			if( clients[i] != getMyUserId() )
+			{
+				results.append( clients[i] );
+			}
 		}
+		gTs3Functions.freeMemory( clients );
 	}
-	gTs3Functions.freeMemory( clients );
 	return results;
 }
 
