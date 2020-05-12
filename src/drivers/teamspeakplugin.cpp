@@ -95,7 +95,7 @@ static QPointer<Driver::TeamSpeakPlugin> gTeamSpeakPlugin;
 static QList<Driver::TeamSpeakAudioBackend*> gAudioBackends;
 static QMutex audioBackendMutex( QMutex::Recursive );
 
-#define PLUGIN_API_VERSION 23
+#define PLUGIN_API_VERSION 24
 
 #ifdef _WIN32
 /* Helper function to convert wchar_T to Utf-8 encoded strings on Windows */
